@@ -1,0 +1,5 @@
+name: 'Gak Pake Lama'
+type: module
+description: 'Cara cepat bikin system gak pake lama berbasis file configurasi YML.'
+core: 8.x
+package: 'GPL'

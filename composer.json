@@ -1,0 +1,14 @@
+{
+  "name": "drupal/gpl",
+  "type": "drupal-module",
+  "description": "Cara cepat bikin system gak pake lama berbasis file configurasi YML.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/gpl",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/gpl",
+    "source": "http://cgit.drupalcode.org/gpl"
+  },
+  "require": { }
+}
