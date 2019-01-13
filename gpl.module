@@ -1,1 +1,95 @@
 <?php
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+/**
+ * Implements hook_element_info().
+ */
+function gpl_element_info() {
+    $types['input_group'] = array(
+        '#theme' => 'input_group',
+        '#theme_wrappers' => array('form_element'),
+        '#process' => array('gpl_process_input_group'),
+    );
+    return $types;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function gpl_theme() {
+    return array(
+        'input_group' => array(
+            'render element' => 'elements',
+        ),
+    );
+}
+
+
+function theme_input_group($variables) {
+    $elements = &$variables['elements']; 
+    $childrens = element_children($elements);
+    $add_button = '';
+    $edit_button = '';
+    $select = '';
+    $title = '';
+    $title_display = '';
+    foreach ($childrens as $children) {
+        if (strpos($children, 'add_entityconnect__') === 0) {
+            unset($elements[$children]['#prefix']);
+            unset($elements[$children]['#suffix']);
+            // unset($elements[$children]['#disabled']);
+            $add_button .= drupal_render($elements[$children]);
+        }
+        elseif (strpos($children, 'edit_entityconnect__') === 0) {
+            unset($elements[$children]['#prefix']);
+            unset($elements[$children]['#suffix']);
+            // unset($elements[$children]['#disabled']);
+            $edit_button .= drupal_render($elements[$children]);
+        }
+        else{
+            // if (isset($elements[$children]['#title']) && empty($title)) {
+                // $title = $elements[$children]['#title'];
+            // }
+            // if (isset($elements[$children]['#title_display']) && empty($title_display)) {
+                // $title_display = $elements[$children]['#title_display'];
+            // }
+            unset($elements[$children]['#theme_wrappers']);
+            // $elements[$children]['#attributes']['disabled'] = 'disabled';
+            $select .= drupal_render($elements[$children]);
+        }
+    }
+    $html = '
+<div class="input-group">
+    <div class="input-group-btn">
+    '.$add_button.$edit_button.'
+    </div> 
+    '.$select.'
+</div>';
+    return $html;
+}
+
+/**
+ * Melakukan proses sebagai berikut:
+ * - Copy property element dari element select.
+ * - Agar bisa dikenal oleh theme wrappers.
+ */
+function gpl_process_input_group($element) {
+    // $debugname = 'element'; dpm($$debugname, '$' . $debugname);
+    // Copy
+    if (isset($element['target_id']['#title'])) {
+        $element['#title'] = $element['target_id']['#title'];
+    }
+    // if (isset($element['target_id'])) {
+        // $element['target_id']['#disabled'] = true;
+    // }
+    if (isset($element['target_id']['#required'])) {
+        $element['#required'] = $element['target_id']['#required'];
+    }
+    if (isset($element['target_id']['#title_display'])) {
+        $element['#title_display'] = $element['target_id']['#title_display'];
+    }
+    // $debugname = 'element'; $debugfile = 'debug.html'; $debugvariable = '|||wakwaw|||'; if (array_key_exists($debugname, get_defined_vars())) { $debugvariable = $$debugname; } elseif (isset($this) && property_exists($this, $debugname)) { $debugvariable = $this->{$debugname}; $debugname = '$this->' . $debugname; } if ($debugvariable !== '|||wakwaw|||') { ob_start(); echo "\r\n<pre>" . basename(__FILE__ ). ":" . __LINE__ . " (Time: " . date('c') . ", Direktori: " . dirname(__FILE__) . ")\r\n". 'var_dump(' . $debugname . '): '; var_dump($debugvariable); echo "</pre>\r\n"; $debugoutput = ob_get_contents();ob_end_clean(); file_put_contents($debugfile, $debugoutput, FILE_APPEND); }
+    
+    return $element;
+}

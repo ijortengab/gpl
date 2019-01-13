@@ -1,3 +1,4 @@
 name = Gak Pake Lama
 description = "Cara cepat bikin system gak pake lama berbasis file configurasi YML"
 core = 7.x
+dependencies[] = taxonomy_machine_name

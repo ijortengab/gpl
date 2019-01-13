@@ -10,3 +10,8 @@ Cara cepat bikin system gak pake lama berbasis file configurasi YML
 
 Project ini terinspirasi dari Vagrant dan Docker
 
+## Fitur di Drupal 7
+
+Menyediakan tipe element baru yang mendukung untuk Bootstrap Front End Framework.
+
+- '#type' => 'input_group'

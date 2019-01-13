@@ -1,0 +1,17 @@
+{
+    "name": "ijortengab/gpl",
+    "description": "Gak Pake Lama",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "IjorTengab",
+            "email": "m_roji28@yahoo.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {"Gpl\\": "src/Gpl/"}
+    }
+}

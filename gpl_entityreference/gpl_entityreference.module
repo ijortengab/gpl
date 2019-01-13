@@ -1,0 +1,155 @@
+<?php
+
+
+/**
+ * Implements of hook_menu_alter().
+ */
+function gpl_entityreference_menu_alter(&$items) {
+    $items['entityreference/autocomplete/single/%/%/%']['page callback'] = 'gpl_entityreference_autocomplete_callback';
+    $items['entityreference/autocomplete/tags/%/%/%']['page callback'] = 'gpl_entityreference_autocomplete_callback';
+}
+
+/**
+ * Duplicate of entityreference_autocomplete_callback().
+ */
+function gpl_entityreference_autocomplete_callback($type, $field_name, $entity_type, $bundle_name, $entity_id = '', $string = '') {
+  // If the request has a '/' in the search text, then the menu system will have
+  // split it into multiple arguments and $string will only be a partial.
+  // We want to make sure we recover the intended $string.
+  $args = func_get_args();
+  // Shift off the $type, $field_name, $entity_type,
+  // $bundle_name, and $entity_id args.
+  array_shift($args);
+  array_shift($args);
+  array_shift($args);
+  array_shift($args);
+  array_shift($args);
+  $string = implode('/', $args);
+
+  $field = field_info_field($field_name);
+  $instance = field_info_instance($entity_type, $field_name, $bundle_name);
+
+  return gpl_entityreference_autocomplete_callback_get_matches($type, $field, $instance, $entity_type, $entity_id, $string);
+}
+
+/**
+ * Duplicate of entityreference_autocomplete_callback_get_matches().
+ * Modify label without entity ID.
+ */
+function gpl_entityreference_autocomplete_callback_get_matches($type, $field, $instance, $entity_type, $entity_id = '', $string = '') {
+  $matches = array();
+  $prefix = '';
+
+  $entity = NULL;
+  if ($entity_id !== 'NULL') {
+    $entity = entity_load_single($entity_type, $entity_id);
+    $has_view_access = (entity_access('view', $entity_type, $entity) !== FALSE);
+    $has_update_access = (entity_access('update', $entity_type, $entity) !== FALSE);
+    if (!$entity || !($has_view_access || $has_update_access)) {
+      return MENU_ACCESS_DENIED;
+    }
+  }
+
+  $handler = entityreference_get_selection_handler($field, $instance, $entity_type, $entity);
+
+  if ($type == 'tags') {
+    // The user enters a comma-separated list of tags.
+    // We only autocomplete the last tag.
+    $tags_typed = drupal_explode_tags($string);
+    $tag_last = drupal_strtolower(array_pop($tags_typed));
+    if (!empty($tag_last)) {
+      $prefix = count($tags_typed) ? implode(', ', $tags_typed) . ', ' : '';
+    }
+  }
+  else {
+    // The user enters a single tag.
+    $tag_last = $string;
+  }
+
+  if (isset($tag_last)) {
+    // Get an array of matching entities.
+    $entity_labels = $handler->getReferencableEntities($tag_last, $instance['widget']['settings']['match_operator'], 10);
+    $denied_label = t(ENTITYREFERENCE_DENIED);
+    // Loop through the products and convert them into autocomplete output.
+    foreach ($entity_labels as $values) {
+      foreach ($values as $entity_id => $label) {
+        // Never autocomplete entities that aren't accessible.
+        if ($label == $denied_label) {
+          continue;
+        }
+        // $key = "$label ($entity_id)";
+        $key = "$label";
+        // Strip starting/trailing white spaces, line breaks and tags.
+        $key = preg_replace('/\s\s+/', ' ', str_replace("\n", '', trim(decode_entities(strip_tags($key)))));
+        // Names containing commas or quotes must be wrapped in quotes.
+        if (strpos($key, ',') !== FALSE || strpos($key, '"') !== FALSE) {
+          $key = '"' . str_replace('"', '""', $key) . '"';
+        }
+        $matches[$prefix . $key] = '<div class="reference-autocomplete">' . $label . '</div>';
+      }
+    }
+  }
+
+  drupal_json_output($matches);
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ * Modify label without entity ID.
+ */
+function gpl_entityreference_field_widget_form_alter(&$element, &$form_state, $context) {
+  if ($context['instance']['widget']['type'] == 'entityreference_autocomplete' || $context['instance']['widget']['type'] == 'entityreference_autocomplete_tags') {
+    $delta = $context['delta'];
+    $form = $context['form'];
+    $field = $context['field'];
+    $instance = $context['instance'];
+    $langcode = $context['langcode'];
+    $items = $context['items'];
+    $delta = $context['delta'];
+
+    $entity_type = $instance['entity_type'];
+    $entity = isset($element['#entity']) ? $element['#entity'] : NULL;
+    $handler = entityreference_get_selection_handler($field, $instance, $entity_type, $entity);
+
+    if ($instance['widget']['type'] == 'entityreference_autocomplete') {
+      // We let the Field API handles multiple values for us, only take
+      // care of the one matching our delta.
+      if (isset($items[$delta])) {
+        $items = array($items[$delta]);
+      }
+      else {
+        $items = array();
+      }
+    }
+
+    $entity_ids = array();
+    $entity_labels = array();
+
+    // Build an array of entities ID.
+    foreach ($items as $item) {
+      if (isset($item['target_id'])) {
+        $entity_ids[] = $item['target_id'];
+      }
+    }
+
+    // Load those entities and loop through them to extract their labels.
+    $entities = entity_load($field['settings']['target_type'], $entity_ids);
+
+    foreach ($entities as $entity_id => $entity_item) {
+      $label = $handler->getLabel($entity_item);
+      $key = "$label";
+      // Labels containing commas or quotes must be wrapped in quotes.
+      if (strpos($key, ',') !== FALSE || strpos($key, '"') !== FALSE) {
+        $key = '"' . str_replace('"', '""', $key) . '"';
+      }
+      $entity_labels[] = $key;
+    }
+
+    if ($instance['widget']['type'] == 'entityreference_autocomplete') {
+      $element['target_id']['#default_value'] = implode(', ', $entity_labels);
+    }
+    else {
+      $element['#default_value'] = implode(', ', $entity_labels);
+    }
+  }
+}

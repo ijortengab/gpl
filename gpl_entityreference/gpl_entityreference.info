@@ -1,0 +1,4 @@
+name = gpl_entityreference
+description = Hack entityreference agar menyembunyikan entity id pada widget autocomplete.
+core = 7.x
+dependencies[] = entityreference
