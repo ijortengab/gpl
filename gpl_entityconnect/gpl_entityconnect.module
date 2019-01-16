@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * Impelements of hook_entityconnect_add_edit_button_submit_alter().
+ * Rewrite target_id from label.
+ */
+function gpl_entityconnect_entityconnect_add_edit_button_submit_alter(&$data) {
+    $field = $data['field'];
+    $field_info = $data['field_info'];
+    $form = $data['form'];
+    $entity_type = $form['#entity_type'];
+    $bundle = $form['#bundle'];
+    $entity = $form['#entity'];
+    $instance = field_info_instance($entity_type, $field, $bundle);
+    $handler = entityreference_get_selection_handler($field_info, $instance, $entity_type, $entity);
+    $label = $data['target_id'];
+    $entity_labels = $handler->getReferencableEntities($label, $instance['widget']['settings']['match_operator'], 10);
+    foreach ($entity_labels as $values) {
+        foreach ($values as $entity_id => $label) {
+            // Just grab the first.
+            $data['target_id'] = $entity_id;
+            return;
+        }
+    }
+}

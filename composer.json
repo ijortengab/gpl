@@ -9,8 +9,10 @@
             "email": "m_roji28@yahoo.com"
         }
     ],
+    "bin": ["bin/gpl"],
     "minimum-stability": "dev",
-    "require": {},
+    "require": {
+    },
     "autoload": {
         "psr-4": {"Gpl\\": "src/Gpl/"}
     }

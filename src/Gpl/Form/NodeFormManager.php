@@ -9,26 +9,26 @@ class NodeFormManager
     protected $form_state;
     protected $current_field;
     protected $current_behaviour;
-    
+
     /**
-     * 
+     *
      */
     public function __construct($form_id, &$form, &$form_state) {
         $this->form_id = $form_id;
         $this->form =& $form;
         $this->form_state =& $form_state;
     }
-    
+
     /**
-     * 
+     *
      */
     public function __get($name) {
         $this->current_field = $name;
         return $this;
     }
-    
+
     /**
-     * 
+     *
      */
     public function isValue($value)
     {
@@ -38,9 +38,9 @@ class NodeFormManager
             $this->isInitialize() && $this->$field->isOriginalValue($value) ||
             $this->isRebuild() && $this->$field->isCurrentValue($value)
         );
-    } 
+    }
     /**
-     * 
+     *
      */
     public function isFilled()
     {
@@ -51,9 +51,9 @@ class NodeFormManager
             $this->isRebuild() && $this->$field->isCurrentValueFilled()
         );
     }
-    
+
     /**
-     * 
+     *
      */
     public function isCurrentValue($value)
     {
@@ -70,9 +70,9 @@ class NodeFormManager
             $form_state['values'][$field][LANGUAGE_NONE][0]['target_id'] == $value
         );
     }
-    
+
     /**
-     * 
+     *
      */
     public function isOriginalValue($value)
     {
@@ -83,22 +83,22 @@ class NodeFormManager
         return isset($form_state['node']->$field[LANGUAGE_NONE]) &&
         $form_state['node']->$field[LANGUAGE_NONE][0]['target_id'] == $value;
     }
-    
+
     /**
-     * 
+     *
      */
     public function isCurrentValueFilled()
     {
         $form_state = $this->form_state;
         $field = $this->current_field;
         $this->current_field = null;
-        return 
+        return
             isset($form_state['input'][$field][LANGUAGE_NONE]) ||
             isset($form_state['values'][$field][LANGUAGE_NONE][0]['target_id']);
     }
-    
+
     /**
-     * 
+     *
      */
     public function isOriginalValueFilled()
     {
@@ -107,25 +107,25 @@ class NodeFormManager
         $this->current_field = null;
         return isset($form_state['node']->$field[LANGUAGE_NONE]);
     }
-    
+
     /**
-     * 
+     *
      */
     public function setBehaviourValue($behaviour)
     {
         $this->current_behaviour = $behaviour;
     }
-    
+
     /**
-     * 
+     *
      */
     public function resetBehaviourValue()
     {
         $this->current_behaviour = null;
     }
-    
+
     /**
-     * 
+     *
      */
     public function modifyValue(&$value)
     {
@@ -139,54 +139,54 @@ class NodeFormManager
                 $result = array_shift($result);
                 $value = $result->tid;
                 break;
-        
+
             case '':
                 // Do something.
                 break;
-        
+
             default:
                 // Do something.
                 break;
         }
-        // return $this; 
+        // return $this;
     }
-    
+
     /**
-     * 
+     *
      */
     public function isRebuild()
     {
         return $this->form_state['rebuild'];
     }
-    
+
     /**
-     * 
+     *
      */
     public function isInitialize()
     {
-        return !$this->form_state['rebuild']; 
+        return !$this->form_state['rebuild'];
     }
-    
+
     /**
-     * 
+     *
      */
     public function show()
     {
         $this->form[$this->current_field]['#access'] = true;
         $this->current_field = null;
     }
-    
+
     /**
-     * 
+     *
      */
     public function hide()
     {
         $this->form[$this->current_field]['#access'] = false;
         $this->current_field = null;
     }
-    
+
     /**
-     * 
+     *
      */
     public function restore()
     {
@@ -195,9 +195,9 @@ class NodeFormManager
         unset($this->form_state['backup'][$this->current_field]);
         $this->current_field = null;
     }
-    
+
     /**
-     * 
+     *
      */
     public function backup()
     {
@@ -206,16 +206,29 @@ class NodeFormManager
         unset($this->form[$this->current_field]);
         $this->current_field = null;
     }
-    
+
     /**
-     * 
+     *
      */
     public function addAjax($array)
     {
         $this->form[$this->current_field][LANGUAGE_NONE]['#ajax'] = $array;
         $this->current_field = null;
     }
-    
-    
+
+    /**
+     *
+     */
+    public function prependProperty($property, $value)
+    {
+        $field = $this->current_field;
+        $this->current_field = null;
+        if (!isset($this->form[$field][LANGUAGE_NONE][0]['#'.$property])) {
+            $this->form[$field][LANGUAGE_NONE][0]['#'.$property] = array();
+            array_unshift($this->form[$field][LANGUAGE_NONE][0]['#'.$property], $value);
+        }
+    }
+
+
 }
 

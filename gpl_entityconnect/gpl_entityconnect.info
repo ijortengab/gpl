@@ -1,0 +1,3 @@
+name = gpl_entityconnect
+core = 7.x
+dependencies[] = entityconnect

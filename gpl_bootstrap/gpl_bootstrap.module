@@ -1,0 +1,127 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function gpl_bootstrap_theme() {
+    return array(
+        'input_group' => array(
+            'render element' => 'element',
+        ),
+        'input_group_button' => array(
+            'render element' => 'element',
+        ),
+        'input_group_addon' => array(
+            'render element' => 'element',
+        ),
+        'icon_search' => array(
+            'render element' => 'element',
+        ),
+    );
+}
+
+/**
+ * Implements hook_element_info().
+ */
+function gpl_bootstrap_element_info() {
+    // Coming soon.
+    $types['input_group'] = array(
+        // '#theme' => '__',
+        // '#theme_wrappers' => array('__'),
+        // '#process' => array('__'),
+    );
+    return $types;
+}
+
+/**
+ * Function of #post_render().
+ */
+function gpl_bootstrap_postrender_prevent_double_input_group($html, $element) {
+    return preg_replace('/<div class="input-group">((.|[\n])*)<\/div>/', '$1', $html);
+}
+
+
+/**
+ * todo, jangan pake ini target_id, cari by smart.
+ */
+function gpl_bootstrap_prerender_input_group_button($element) {
+    // Hapus #theme_wrapper "form_element" pada element children "target_id".
+    if (isset($element['target_id']['#theme_wrappers']) && in_array('form_element', $element['target_id']['#theme_wrappers'])) {
+        $key = array_search('form_element', $element['target_id']['#theme_wrappers']);
+        unset($element['target_id']['#theme_wrappers'][$key]);
+    }
+    // Tambah #post_render "gpl_bootstrap_postrender_prevent_double_input_group" pada pada element children "target_id".
+    // Yang bikin double adalah theme bootstrap.
+    if (!isset($element['target_id']['#post_render'])) {
+        $element['target_id']['#post_render'] = array();
+    }
+    array_unshift($element['target_id']['#post_render'], 'gpl_bootstrap_postrender_prevent_double_input_group');
+
+    // Tambah #theme_wrapper "form_element" dan "input_group" pada element ini.
+    if (!isset($element['#theme_wrappers'])) {
+        $element['#theme_wrappers'] = array();
+    }
+    array_unshift($element['#theme_wrappers'], 'form_element');
+    array_unshift($element['#theme_wrappers'], 'input_group');
+    //
+    if (!isset($element['#theme_wrappers'])) {
+        $element['#theme_wrappers'] = array();
+        array_unshift($element['#theme_wrappers'], 'form_element');
+        array_unshift($element['#theme_wrappers'], 'input_group');
+    }
+    // Copy title.
+    if (isset($element['target_id']['#title'])) {
+        $element['#title'] = $element['target_id']['#title'];
+    }
+    if (isset($element['target_id']['#required'])) {
+        $element['#required'] = $element['target_id']['#required'];
+    }
+    // Buat pseudo element button.
+    $childrens = element_children($element);
+    foreach ($childrens as $children) {
+        if (strpos($children, 'add_entityconnect__') === 0) {
+            unset($element[$children]['#prefix']);
+            unset($element[$children]['#suffix']);
+            $element['_button'][$children] = $element[$children];
+            unset($element[$children]);
+        }
+        elseif (strpos($children, 'edit_entityconnect__') === 0) {
+            unset($element[$children]['#prefix']);
+            unset($element[$children]['#suffix']);
+            $element['_button'][$children] = $element[$children];
+            unset($element[$children]);
+        }
+    }
+    if (isset($element['_button'])) {
+        $element['_button']['#theme_wrappers'][] = 'input_group_button';
+        $element['_button']['#weight'] = 1;
+    }
+    // Tambah icon search sebagai UX.
+    $element['_search']['#theme_wrappers'][] = 'icon_search';
+    $element['_search']['#theme_wrappers'][] = 'input_group_addon';
+    $element['_search']['#weight'] = -1;
+
+    return $element;
+}
+
+
+function theme_input_group_button($variables) {
+    return '<div class="input-group-btn">' . $variables['element']['#children'] . '</div>';
+
+}
+
+function theme_input_group($variables) {
+    return '<div class="input-group">' . $variables['element']['#children'] . '</div>';
+}
+
+
+function theme_input_group_addon($variables) {
+    return '<span class="input-group-addon">' . $variables['element']['#children'] . '</span>';
+
+}
+
+function theme_icon_search($variables) {
+    return '<span class="icon glyphicon glyphicon-search" aria-hidden="true">' . $variables['element']['#children'] . '</span>';
+}
+
+

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Implements of hook_menu_alter().
  */
