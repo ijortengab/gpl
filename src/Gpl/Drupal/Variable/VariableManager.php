@@ -11,7 +11,7 @@ class VariableManager
     /**
      * Mendapatkan variable.
      */
-    public static function get($key, $default = null)
+    public static function get($name, $default = null)
     {
         if (self::$conf === null) {
             global $conf;
@@ -23,15 +23,15 @@ class VariableManager
     /**
      * Mengeset variable.
      */
-    public static function set($key, $value)
+    public static function set($name, $value)
     {
         if (self::$conf === null) {
             global $conf;
             self::$conf = $conf;
         }
         self::$is_modified = true;
-        self::$conf[$key] = $value;
-        self::$conf_modified[$key] = $value;
+        self::$conf[$name] = $value;
+        self::$conf_modified[$name] = $value;
     }
 
     /**
@@ -40,8 +40,8 @@ class VariableManager
     public static function write()
     {
         if (self::$is_modified) {
-            foreach (self::$conf_modified as $key => $value) {
-                variable_set($key, $value);
+            foreach (self::$conf_modified as $name => $value) {
+                variable_set($name, $value);
             }
         }
     }
