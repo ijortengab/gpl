@@ -12,6 +12,7 @@
     "bin": ["bin/gpl"],
     "minimum-stability": "dev",
     "require": {
+        "symfony/yaml": "^3"
     },
     "autoload": {
         "psr-4": {"Gpl\\": "src/Gpl/"}
