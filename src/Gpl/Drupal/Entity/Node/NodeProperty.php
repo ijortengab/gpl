@@ -73,13 +73,34 @@ class NodeProperty
      */
     public function populate($parent, $info)
     {
-        $modified = false;
+        $is_modified = false;
+        $keys = array_keys($info);
+        while ($key = array_shift($keys)) {
+            switch ($key) {
+                case 'label':
+                    if ($this->getLabel() != $info['label']) {
+                        $this->setLabel($info['label']);
+                        $is_modified = true;
+                    }
+                    break;
 
-        if (array_key_exists('label', $info) && $this->getLabel() != $info['label']) {
-            $this->setLabel($info['label']);
-            $modified = true;
+                case 'field':
+                    // Do something.
+                    break;
+
+                default:
+                    if (is_array($info[$key])) {
+                        sort($info[$key]); // Required.
+                    }
+                    if ($this->getProperty($key) != $info[$key]) {
+                        $this->setProperty($key, $info[$key]);
+                        $test = $this->options;
+                        $is_modified = true;
+                    }
+                    break;
+            }
         }
-        if ($modified) {
+        if ($is_modified) {
             Application::writeRegister($parent);
         }
     }
@@ -105,7 +126,7 @@ class NodeProperty
         }
         node_type_save($info);
         foreach (static::getPropertiesVariable() as $key) {
-            $this->{$key} = Variable::set('node_' . $key . '_' . $info->type, $this->{$key});
+            Variable::set('node_' . $key . '_' . $info->type, $this->{$key});
         }
     }
 
@@ -124,5 +145,100 @@ class NodeProperty
     {
         return $this->name;
     }
-}
 
+    protected function getProperty($name)
+    {
+        switch ($name) {
+            case 'preview':
+                switch ($this->preview) {
+                    case 0: return 'disabled';
+                    case 1: return 'optional';
+                    case 2: return 'required';
+                }
+                break;
+
+            case 'guidelines':
+                return $this->help;
+
+            case 'default_options':
+                // Unreadable => Readable.
+                $adapter = [
+                    'status' => 'published',
+                    'promote' => 'promoted',
+                    'sticky' => 'sticky',
+                    'revision' => 'revision',
+                ];
+                $return_value = [];
+                foreach ($adapter as $unreadable_option => $readable_option) {
+                    if (in_array($unreadable_option, $this->options)) {
+                        $return_value[] = $readable_option;
+                    }
+                }
+                sort($return_value); // Required.
+                return $return_value;
+                break;
+
+            case 'display_options':
+                $return_value = [];
+                if ($this->submitted === 1) {
+                    $return_value[] = 'author_date';
+                }
+                sort($return_value); // Required.
+                return $return_value;
+                break;
+
+            default:
+                if (property_exists($this, $name)) {
+                    return $this->{$name};
+                }
+                break;
+        }
+    }
+
+    protected function setProperty($name, $value)
+    {
+        switch ($name) {
+            case 'title_label':
+            case 'description':
+                $this->{$name} = $value;
+                break;
+
+            case 'preview':
+                switch ($value) {
+                    case 'disabled': $this->preview = 0; break;
+                    case 'optional': $this->preview = 1; break;
+                    case 'required': $this->preview = 2; break;
+                }
+                break;
+
+            case 'guidelines':
+                $this->help = $value;
+                break;
+
+            case 'default_options':
+                // Convert null to array.
+                $value = (array) $value;
+                // Unreadable => Readable.
+                $adapter = [
+                    'status' => 'published',
+                    'promote' => 'promoted',
+                    'sticky' => 'sticky',
+                    'revision' => 'revision',
+                ];
+                $original_value = [];
+                foreach ($adapter as $unreadable_option => $readable_option) {
+                    if (in_array($readable_option, $value)) {
+                        $original_value[] = $unreadable_option;
+                    }
+                }
+                $this->options = $original_value;
+                break;
+
+            case 'display_options':
+                // Convert null to array.
+                $value = (array) $value;
+                $this->submitted = in_array('author_date', $value) ? 1 : 0;
+                break;
+        }
+    }
+}
