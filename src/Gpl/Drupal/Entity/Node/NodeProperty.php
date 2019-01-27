@@ -26,8 +26,8 @@ class NodeProperty
     protected $orig_type;
     // Storage: table variable.
     protected $preview = 0;
-    protected $submitted = 0;
-    protected $options = [];
+    protected $submitted = 1;
+    protected $options = ['status'];
 
     /**
      * Memberikan array berisi nama property default yang disimpan pada

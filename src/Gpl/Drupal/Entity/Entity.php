@@ -11,7 +11,7 @@ class Entity
     {
         switch ($type) {
             case 'node':
-                return '\\Gpl\\Drupal\\Entity\\Node';
+                return '\\Gpl\\Drupal\\Entity\\Node\\Node';
         }
     }
 }

@@ -16,6 +16,12 @@ class Application
      */
     protected static $write_register = [];
 
+    protected static $queue = [];
+
+    protected static $new_queue = [];
+
+    protected static $object_working = [];
+
     /**
      * Object instance dari ConfigManager.
      */
@@ -37,8 +43,10 @@ class Application
      */
     public static function writeRegister($object)
     {
-        self::$write_register[] = $object;
-        // return $this;
+        // Hindari duplikat.
+        if (!in_array($object, self::$write_register)) {
+            self::$write_register[] = $object;
+        }
     }
 
     /**
@@ -89,12 +97,24 @@ class Application
         $this->config->detectDirectory()->scan();
         $files_config = $this->config->getFiles();
         foreach ($files_config as $path => $info) {
-            $name = $info->name;
-            $object = $this->getObjetFromAddress($name);
+            $address = $info->name;
+            $address = $this->expandAddressName($address);
             $contents = file_get_contents($path);
             $yaml = Yaml::parse($contents);
-            $object->setYaml($yaml)->analyze()->execute();
+            static::$queue[] = ['address' => $address, 'yaml' => $yaml];
         }
+        do {
+            static::$queue = array_merge(static::$queue, static::$new_queue);
+            static::$new_queue = [];
+            foreach (static::$queue as $each) {
+                $object = $this->getObjetFromAddress($each['address'], $each['yaml']);
+                if ($object instanceof ApplicationInterface) {
+                    $object->setYaml($each['yaml'])->analyze()->execute();
+                }
+            }
+            static::$queue = [];
+        }
+        while (!empty(static::$new_queue));
         $this->write();
     }
 
@@ -104,39 +124,40 @@ class Application
      * Misalnya:
      *   - entity.type.node.bundle
      *   - entity.type.node.bundle.article
+     * todo: Gunakan getObjetFromAddress($name): ApplicationInterface
+     * return: string atau object. jika string, maka berarti ada penambahan
+     * queue.
      */
-    protected function getObjetFromAddress($name)
+    protected function getObjetFromAddress($name, $yaml)
     {
-        $name = $this->expandAddressName($name);
-        $explode = explode('.',$name);
-        $odd = true;
-        $namespace = '\\Gpl\\Drupal\\' . ucfirst($explode[0]);
-        while($part = array_shift($explode)) {
-            if ($odd) {
-                $object = $namespace . '\\' . ucfirst($part);
+        // Convert null if exists to empty array.
+        $yaml = (array) $yaml;
+        $explode = $parts = explode('.',$name);
+        $part = array_shift($parts);
+        $part = ucfirst($part);
+        $object = '\\Gpl\\Drupal\\' . $part . '\\' . $part;
+        while($part = array_shift($parts)) {
+            $method = 'get' . ucfirst($part);
+            $args = isset($parts[0]) ? array(array_shift($parts)): array();
+            if (empty($args)) {
+                $keys = array_keys($yaml);
+                foreach ($keys as $key) {
+                    $new_address = implode('.', $explode) . '.' . $key;
+                    static::$new_queue[] = ['address' => $new_address, 'yaml' => $yaml[$key]];
+                }
             }
-            else {
-                $method = 'get' . ucfirst($part);
+            else{
+
                 if (is_string($object)) {
-                    $object = $object . '::' . $method;
+                    $callback = $object . '::' . $method;
                 }
                 else {
-                    $object = array($object, $method);
+                    $callback = array($object, $method);
                 }
-                $args = isset($explode[0]) ? array($explode[0]): array();
-                $result = call_user_func_array($object, $args);
-                if (is_string($result)) {
-                    $namespace = $result;
-                }
-                elseif (is_object($result)) {
-                    $object = $result;
-                    array_shift($explode);
-                    $odd = $odd ? false: true;
-                }
+                $object = call_user_func_array($callback, $args);
             }
-            $odd = $odd ? false: true;
         }
-        return is_object($object) ? $object : null;
+        return $object;
     }
 
     /**
