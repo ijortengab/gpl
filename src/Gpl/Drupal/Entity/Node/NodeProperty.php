@@ -94,7 +94,6 @@ class NodeProperty
                     }
                     if ($this->getProperty($key) != $info[$key]) {
                         $this->setProperty($key, $info[$key]);
-                        $test = $this->options;
                         $is_modified = true;
                     }
                     break;

@@ -69,11 +69,7 @@ class Node implements ApplicationInterface
         $this->bundle = $bundle;
         $node_type = node_type_get_type($bundle);
         if ($node_type === false) {
-            $this->property = new NodeProperty;
             Application::writeRegister($this);
-        }
-        else {
-            $this->property = new NodeProperty($node_type);
         }
         return $this;
     }
@@ -135,6 +131,7 @@ class Node implements ApplicationInterface
      */
     public function write()
     {
+        $this->populateProperty();
         return $this->property->write($this);
     }
 
@@ -143,10 +140,26 @@ class Node implements ApplicationInterface
      */
     protected function modifyBundle($machine_name, $info)
     {
+        $this->populateProperty();
         switch ($this->analyze) {
             case 'modify_bundle':
                 $this->property->populate($this, $info);
                 break;
+        }
+    }
+
+    /**
+     *
+     */
+    protected function populateProperty()
+    {
+        if (null === $this->property) {
+            $node_type = node_type_get_type($this->bundle);
+            if ($node_type === false) {
+                $this->property = new NodeProperty;
+            }
+            else {
+                $this->property = new NodeProperty($node_type);
         }
     }
 }

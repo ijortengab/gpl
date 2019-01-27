@@ -75,5 +75,6 @@ class Field implements ApplicationInterface
      */
     public function write()
     {
+
     }
 }

@@ -1,10 +1,27 @@
-## Status Saat Ini
+﻿## Tentang
 
-unstable
+GPL adalah:
 
-## README
+ - Gak Pake Lama
 
-Cara cepat bikin system gak pake lama berbasis file configurasi YML
+ - Drupal Generator bekerja seperti layaknya Static Generator. Menggunakan
+   file plain text sebagai dasar membangun Drupal.
+
+ - Pelengkap Drupal Tools Command Line Interface lainnya, seperti drush,
+   drupal console, dan coder.
+
+ - Ditujukan untuk pengembangan sistem informasi manajemen yang cepat.
+
+Filosofi GPL adalah:
+
+ - Untuk keperluan spesifik, maka akan digunakan autocreate custom module, yang
+   memaksimalkan penggunaaan hook drupal.
+
+ - Seminimal mungkin dalam menggunakan contrib module. Sebagai contoh:
+   module rules tidak diperlukan. Untuk kebutuhan conditional proses dan event
+   maka akan dibuat custom module. Module flag dan workflow tidak diperlukan.
+   Untuk kebutuhan memberi tanda atau status, maka akan memaksimalkan penggunaan
+   taxonomy term dan menggunakan hook Drupal semaksimal mungkin.
 
 ## Inspirasi
 

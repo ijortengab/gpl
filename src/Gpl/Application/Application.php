@@ -147,7 +147,6 @@ class Application
                 }
             }
             else{
-
                 if (is_string($object)) {
                     $callback = $object . '::' . $method;
                 }
