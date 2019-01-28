@@ -160,6 +160,7 @@ class Node implements ApplicationInterface
             }
             else {
                 $this->property = new NodeProperty($node_type);
+            }
         }
     }
 }
