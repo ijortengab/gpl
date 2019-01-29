@@ -2,6 +2,7 @@
 namespace Gpl\Drupal\Entity\Node;
 
 use Gpl\Application\Application;
+use Gpl\Application\Utility;
 use Gpl\Drupal\Variable\VariableManager as Variable;
 
 /**
@@ -11,34 +12,35 @@ use Gpl\Drupal\Variable\VariableManager as Variable;
 class NodeProperty
 {
     // Storage: table node_type.
-    protected $type;
-    protected $name;
-    protected $base = 'node_content';
-    protected $module;
-    protected $description = '';
-    protected $help = '';
-    protected $has_title = 1;
-    protected $title_label = 'Title';
-    protected $custom = 1;
-    protected $modified = 1;
-    protected $locked = 0;
-    protected $disabled = 0;
-    protected $orig_type;
+    protected $property_table_node;
+
+    protected $is_property_table_node_modified = false;
+
     // Storage: table variable.
-    protected $preview = 0;
-    protected $submitted = 1;
-    protected $options = ['status'];
+    protected $property_table_variable;
+
+    protected $is_property_table_variable_modified = false;
 
     /**
      * Memberikan array berisi nama property default yang disimpan pada
      * table node_type.
      */
-    public static function getPropertiesDefault()
+    protected function getTableNodeProperties()
     {
         return [
-            'type', 'name', 'base', 'module', 'description', 'help',
-            'has_title', 'title_label', 'custom', 'modified', 'locked',
-            'disabled', 'orig_type',
+            'type' => null,
+            'name' => null,
+            'base' => 'node_content',
+            'module' => null,
+            'description' => '',
+            'help' => '',
+            'has_title' => 1,
+            'title_label' => 'Title',
+            'custom' => 1,
+            'modified' => 1,
+            'locked' => 0,
+            'disabled' => 0,
+            'orig_type' => null,
         ];
     }
 
@@ -46,24 +48,32 @@ class NodeProperty
      * Memberikan array berisi nama property tambahan yang disimpan pada
      * table variable.
      */
-    public static function getPropertiesVariable()
+    protected function getTableVariablesProperties()
     {
-        return ['preview', 'submitted', 'options'];
+        return [
+            'preview' => 0,
+            'submitted' => 0,
+            'options' => [],
+        ];
     }
 
     /**
      * Memulai instance.
      */
-    public function __construct($existing = null)
+    public function __construct($node_type = null)
     {
-        if ($existing === null) {
+        $this->property_table_node = $this->getTableNodeProperties();
+        $this->property_table_variable = $this->getTableVariablesProperties();
+        if ($node_type === null) {
+            $this->is_property_table_node_modified = true;
+            $this->is_property_table_variable_modified = true;
             return;
         }
-        foreach (static::getPropertiesDefault() as $key) {
-            $this->{$key} = $existing->{$key};
+        foreach (array_keys($this->getTableNodeProperties()) as $key) {
+            $this->property_table_node[$key] = $node_type->{$key};
         }
-        foreach (static::getPropertiesVariable() as $key) {
-            $this->{$key} = Variable::get('node_' . $key . '_' . $existing->type);
+        foreach (array_keys($this->getTableVariablesProperties()) as $key) {
+            $this->property_table_variable[$key] = variable_get('node_' . $key . '_' . $node_type->type);
         }
     }
 
@@ -109,24 +119,45 @@ class NodeProperty
      */
     public function write($parent)
     {
-        $info = (object) [];
-        foreach (static::getPropertiesDefault() as $key) {
-            $info->{$key} = $this->{$key};
+        if ($this->is_property_table_node_modified) {
+            $this->is_property_table_node_modified = false;
+            $info = (object) [];
+            foreach (array_keys($this->getTableNodeProperties()) as $key) {
+                $info->{$key} = $this->property_table_node[$key];
+            }
+            // Property $type harus ada.
+            if (!isset($info->type)) {
+                $info->type = $parent->getBundleName();
+            }
+            // Property $name harus ada.
+            if (!isset($info->name)) {
+                $info->name = Utility::createLabel($info->type);
+            }
+            node_type_save($info);
         }
+        if ($this->is_property_table_variable_modified) {
+            $this->is_property_table_variable_modified = false;
+            foreach (array_keys($this->getTableVariablesProperties()) as $key) {
+                variable_set('node_' . $key . '_' . $info->type, $this->property_table_variable[$key]);
+            }
+        }
+
+
+        // foreach (static::getPropertiesDefault() as $key) {
+            // $info->{$key} = $this->{$key};
+        // }
         // Property $type harus ada.
-        if (!isset($info->type)) {
-            $info->type = $parent->getBundleName();
-        }
+        // if (!isset($info->type)) {
+            // $info->type = $parent->getBundleName();
+        // }
         // Property $name harus ada.
-        if (!isset($info->name)) {
-            $info->name = preg_replace_callback("/(_)(.)/", function ($matches) {
-                return ' ' . strtoupper($matches[2]);
-            }, ucfirst($info->type));;
-        }
-        node_type_save($info);
-        foreach (static::getPropertiesVariable() as $key) {
-            Variable::set('node_' . $key . '_' . $info->type, $this->{$key});
-        }
+        // if (!isset($info->name)) {
+            // $info->name = Utility::createLabel($info->type);
+        // }
+        // node_type_save($info);
+        // foreach (static::getPropertiesVariable() as $key) {
+            // variable_set('node_' . $key . '_' . $info->type, $this->{$key});
+        // }
     }
 
     /**
@@ -134,7 +165,8 @@ class NodeProperty
      */
     protected function setLabel($value)
     {
-        $this->name = $value;
+        $this->property_table_node['name'] = $value;
+        $this->is_property_table_node_modified = true;
     }
 
     /**
@@ -142,14 +174,14 @@ class NodeProperty
      */
     protected function getLabel()
     {
-        return $this->name;
+        return $this->property_table_node['name'];
     }
 
     protected function getProperty($name)
     {
         switch ($name) {
             case 'preview':
-                switch ($this->preview) {
+                switch ($this->property_table_variable['preview']) {
                     case 0: return 'disabled';
                     case 1: return 'optional';
                     case 2: return 'required';
@@ -157,7 +189,7 @@ class NodeProperty
                 break;
 
             case 'guidelines':
-                return $this->help;
+                return $this->property_table_node['help'];
 
             case 'default_options':
                 // Unreadable => Readable.
@@ -169,7 +201,7 @@ class NodeProperty
                 ];
                 $return_value = [];
                 foreach ($adapter as $unreadable_option => $readable_option) {
-                    if (in_array($unreadable_option, $this->options)) {
+                    if (in_array($unreadable_option, $this->property_table_variable['options'])) {
                         $return_value[] = $readable_option;
                     }
                 }
@@ -179,7 +211,7 @@ class NodeProperty
 
             case 'display_options':
                 $return_value = [];
-                if ($this->submitted === 1) {
+                if ($this->property_table_variable['submitted'] === 1) {
                     $return_value[] = 'author_date';
                 }
                 sort($return_value); // Required.
@@ -187,8 +219,11 @@ class NodeProperty
                 break;
 
             default:
-                if (property_exists($this, $name)) {
-                    return $this->{$name};
+                if (array_key_exists($name, $this->property_table_node)) {
+                    return $this->property_table_node[$name];
+                }
+                elseif (array_key_exists($name, $this->property_table_variable)) {
+                    return $this->property_table_variable[$name];
                 }
                 break;
         }
@@ -199,19 +234,22 @@ class NodeProperty
         switch ($name) {
             case 'title_label':
             case 'description':
-                $this->{$name} = $value;
+                $this->property_table_node[$name] = $value;
+                $this->is_property_table_node_modified = true;
                 break;
 
             case 'preview':
                 switch ($value) {
-                    case 'disabled': $this->preview = 0; break;
-                    case 'optional': $this->preview = 1; break;
-                    case 'required': $this->preview = 2; break;
+                    case 'disabled': $this->property_table_variable['preview'] = 0; break;
+                    case 'optional': $this->property_table_variable['preview'] = 1; break;
+                    case 'required': $this->property_table_variable['preview'] = 2; break;
                 }
+                $this->is_property_table_variable_modified = true;
                 break;
 
             case 'guidelines':
-                $this->help = $value;
+                $this->property_table_node['help'] = $value;
+                $this->is_property_table_node_modified = true;
                 break;
 
             case 'default_options':
@@ -230,13 +268,15 @@ class NodeProperty
                         $original_value[] = $unreadable_option;
                     }
                 }
-                $this->options = $original_value;
+                $this->property_table_variable['options'] = $original_value;
+                $this->is_property_table_variable_modified = true;
                 break;
 
             case 'display_options':
                 // Convert null to array.
                 $value = (array) $value;
-                $this->submitted = in_array('author_date', $value) ? 1 : 0;
+                $this->property_table_variable['submitted'] = in_array('author_date', $value) ? 1 : 0;
+                $this->is_property_table_variable_modified = true;
                 break;
         }
     }

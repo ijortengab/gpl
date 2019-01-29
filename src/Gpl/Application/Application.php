@@ -5,7 +5,6 @@ use Gpl\Data\Config\ConfigManager;
 use Gpl\Data\Content\ContentManager;
 use Gpl\Data\Structure\StructureManager;
 use Gpl\Drupal\Bootstrap\Bootstrap;
-use Gpl\Drupal\Variable\VariableManager as Variable;
 use Symfony\Component\Yaml\Yaml;
 
 class Application
@@ -78,7 +77,7 @@ class Application
         foreach ($list as $object) {
             $object->write();
         }
-        Variable::write();
+        // Variable::write();
     }
 
     /**

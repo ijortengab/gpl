@@ -8,6 +8,8 @@ use Gpl\Drupal\Variable\VariableManager as Variable;
 
 class Node implements ApplicationInterface
 {
+    const ENTITY_TYPE = 'node';
+
     /**
      * Menampung instance dari object Node.
      */
@@ -100,7 +102,7 @@ class Node implements ApplicationInterface
         if (array_key_exists($field_name, $this->fields)) {
             return $this->fields[$field_name];
         }
-        $this->fields[$field_name] = new Field($this, $field_name);
+        $this->fields[$field_name] = new Field($field_name, $this);
         return $this->fields[$field_name];
     }
 

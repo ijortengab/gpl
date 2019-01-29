@@ -1,8 +1,6 @@
 <?php
 namespace Gpl\Data\Config;
 
-use Gpl\Drupal\Variable\VariableManager as Variable;
-
 class ConfigManager
 {
     /**
@@ -21,7 +19,7 @@ class ConfigManager
      */
     public function detectDirectory()
     {
-        $file_private_path = Variable::get('file_private_path');
+        $file_private_path = variable_get('file_private_path');
         if (is_dir($file_private_path.'/gpl/config')) {
             $this->directory = $file_private_path.'/gpl/config';
         }
