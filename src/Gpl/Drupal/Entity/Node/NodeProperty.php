@@ -11,6 +11,8 @@ use Gpl\Drupal\Variable\VariableManager as Variable;
  */
 class NodeProperty
 {
+    protected $parent;
+
     // Storage: table node_type.
     protected $property_table_node;
 
@@ -60,28 +62,33 @@ class NodeProperty
     /**
      * Memulai instance.
      */
-    public function __construct($node_type = null)
+    public function __construct($parent)
     {
+        $this->parent = $parent;
         $this->property_table_node = $this->getTableNodeProperties();
         $this->property_table_variable = $this->getTableVariablesProperties();
-        if ($node_type === null) {
+        if ($this->parent->isBundleNew()) {
             $this->is_property_table_node_modified = true;
             $this->is_property_table_variable_modified = true;
-            return;
         }
-        foreach (array_keys($this->getTableNodeProperties()) as $key) {
-            $this->property_table_node[$key] = $node_type->{$key};
+        else {
+            $bundle_name = $this->parent->getBundleName();
+            $node_type = node_type_get_type($bundle_name);
+            foreach (array_keys($this->getTableNodeProperties()) as $key) {
+                $this->property_table_node[$key] = $node_type->{$key};
+            }
+            foreach (array_keys($this->getTableVariablesProperties()) as $key) {
+                $this->property_table_variable[$key] = variable_get('node_' . $key . '_' . $node_type->type);
+            }
         }
-        foreach (array_keys($this->getTableVariablesProperties()) as $key) {
-            $this->property_table_variable[$key] = variable_get('node_' . $key . '_' . $node_type->type);
-        }
+
     }
 
     /**
      * Mengeset secara massal berbagai property yang didapat dari hasil parse
      * file Yaml.
      */
-    public function populate($parent, $info)
+    public function modify($info)
     {
         $is_modified = false;
         $keys = array_keys($info);
@@ -110,14 +117,14 @@ class NodeProperty
             }
         }
         if ($is_modified) {
-            Application::writeRegister($parent);
+            Application::writeRegister($this->parent);
         }
     }
 
     /**
      * Melakukan aktivitas menulis kedalam database.
      */
-    public function write($parent)
+    public function write()
     {
         if ($this->is_property_table_node_modified) {
             $this->is_property_table_node_modified = false;
@@ -127,7 +134,7 @@ class NodeProperty
             }
             // Property $type harus ada.
             if (!isset($info->type)) {
-                $info->type = $parent->getBundleName();
+                $info->type = $this->parent->getBundleName();
             }
             // Property $name harus ada.
             if (!isset($info->name)) {
@@ -138,7 +145,7 @@ class NodeProperty
         if ($this->is_property_table_variable_modified) {
             $this->is_property_table_variable_modified = false;
             foreach (array_keys($this->getTableVariablesProperties()) as $key) {
-                variable_set('node_' . $key . '_' . $parent->getBundleName(), $this->property_table_variable[$key]);
+                variable_set('node_' . $key . '_' . $this->parent->getBundleName(), $this->property_table_variable[$key]);
             }
         }
     }

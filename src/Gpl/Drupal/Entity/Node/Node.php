@@ -15,10 +15,13 @@ class Node implements ApplicationInterface
      */
     protected static $storage = array();
 
+    protected $is_bundle_new = false;
+
     /**
      * Berisi entity bundle atau node type.
      */
-    protected $bundle;
+
+    protected $bundle_name;
 
     /**
      * Variable untuk menampung hasil analisis address (nama file YAML).
@@ -63,14 +66,12 @@ class Node implements ApplicationInterface
      * Construct. Fleksibel baik bundle belum didefinisikan, atau bundle belum
      * ada di database.
      */
-    public function __construct($bundle = null)
+    public function __construct($bundle_name)
     {
-        if ($bundle == null) {
-            return $this;
-        }
-        $this->bundle = $bundle;
-        $node_type = node_type_get_type($bundle);
+        $this->bundle_name = $bundle_name;
+        $node_type = node_type_get_type($bundle_name);
         if ($node_type === false) {
+            $this->is_bundle_new = true;
             Application::writeRegister($this);
         }
         return $this;
@@ -90,7 +91,15 @@ class Node implements ApplicationInterface
      */
     public function getBundleName()
     {
-        return $this->bundle;
+        return $this->bundle_name;
+    }
+
+    /**
+     *
+     */
+    public function isBundleNew()
+    {
+        return $this->is_bundle_new;
     }
 
     /**
@@ -123,7 +132,7 @@ class Node implements ApplicationInterface
     {
         switch ($this->analyze) {
             case 'modify_bundle':
-                $this->modifyBundle($this->bundle, $this->yaml);
+                $this->modifyBundle($this->yaml);
                 break;
         }
     }
@@ -134,20 +143,16 @@ class Node implements ApplicationInterface
     public function write()
     {
         $this->populateProperty();
-        return $this->property->write($this);
+        return $this->property->write();
     }
 
     /**
      * Action modify each bundle.
      */
-    protected function modifyBundle($machine_name, $info)
+    protected function modifyBundle($info)
     {
         $this->populateProperty();
-        switch ($this->analyze) {
-            case 'modify_bundle':
-                $this->property->populate($this, $info);
-                break;
-        }
+        $this->property->modify($info);
     }
 
     /**
@@ -156,13 +161,7 @@ class Node implements ApplicationInterface
     protected function populateProperty()
     {
         if (null === $this->property) {
-            $node_type = node_type_get_type($this->bundle);
-            if ($node_type === false) {
-                $this->property = new NodeProperty;
-            }
-            else {
-                $this->property = new NodeProperty($node_type);
-            }
+            $this->property = new NodeProperty($this);
         }
     }
 }
