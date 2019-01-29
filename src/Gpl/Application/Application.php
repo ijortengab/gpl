@@ -77,7 +77,6 @@ class Application
         foreach ($list as $object) {
             $object->write();
         }
-        // Variable::write();
     }
 
     /**

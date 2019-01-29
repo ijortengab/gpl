@@ -141,23 +141,6 @@ class NodeProperty
                 variable_set('node_' . $key . '_' . $info->type, $this->property_table_variable[$key]);
             }
         }
-
-
-        // foreach (static::getPropertiesDefault() as $key) {
-            // $info->{$key} = $this->{$key};
-        // }
-        // Property $type harus ada.
-        // if (!isset($info->type)) {
-            // $info->type = $parent->getBundleName();
-        // }
-        // Property $name harus ada.
-        // if (!isset($info->name)) {
-            // $info->name = Utility::createLabel($info->type);
-        // }
-        // node_type_save($info);
-        // foreach (static::getPropertiesVariable() as $key) {
-            // variable_set('node_' . $key . '_' . $info->type, $this->{$key});
-        // }
     }
 
     /**
