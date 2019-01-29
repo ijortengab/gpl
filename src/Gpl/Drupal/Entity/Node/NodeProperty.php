@@ -138,7 +138,7 @@ class NodeProperty
         if ($this->is_property_table_variable_modified) {
             $this->is_property_table_variable_modified = false;
             foreach (array_keys($this->getTableVariablesProperties()) as $key) {
-                variable_set('node_' . $key . '_' . $info->type, $this->property_table_variable[$key]);
+                variable_set('node_' . $key . '_' . $parent->getBundleName(), $this->property_table_variable[$key]);
             }
         }
     }
