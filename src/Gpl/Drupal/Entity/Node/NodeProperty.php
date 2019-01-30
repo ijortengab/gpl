@@ -3,66 +3,44 @@ namespace Gpl\Drupal\Entity\Node;
 
 use Gpl\Application\Application;
 use Gpl\Application\Utility;
-use Gpl\Drupal\Variable\VariableManager as Variable;
+use Gpl\Drupal\Entity\EntityInterface;
 
 /**
  * Seluruh property yang ada didalam class ini merupakan property dari entity
  * Node.
  */
-class NodeProperty
+class NodeProperty implements NodePropertyInterface
 {
-    protected $parent;
-
-    // Storage: table node_type.
-    protected $property_table_node;
-
+    /**
+     * Flag bahwa perlu telah dilakukan perubahan pada $property_table_node.
+     */
     protected $is_property_table_node_modified = false;
 
-    // Storage: table variable.
-    protected $property_table_variable;
-
+    /**
+     * Flag bahwa perlu telah dilakukan perubahan pada $property_table_variable.
+     */
     protected $is_property_table_variable_modified = false;
 
     /**
-     * Memberikan array berisi nama property default yang disimpan pada
-     * table node_type.
+     * Berisi array yang akan digunakan sebagai argument pada fungsi
+     * node_type_save().
      */
-    protected function getTableNodeProperties()
-    {
-        return [
-            'type' => null,
-            'name' => null,
-            'base' => 'node_content',
-            'module' => null,
-            'description' => '',
-            'help' => '',
-            'has_title' => 1,
-            'title_label' => 'Title',
-            'custom' => 1,
-            'modified' => 1,
-            'locked' => 0,
-            'disabled' => 0,
-            'orig_type' => null,
-        ];
-    }
+    protected $property_table_node;
 
     /**
-     * Memberikan array berisi nama property tambahan yang disimpan pada
-     * table variable.
+     * Berisi array yang akan digunakan pada fungsi variable_*.
      */
-    protected function getTableVariablesProperties()
-    {
-        return [
-            'preview' => 0,
-            'submitted' => 0,
-            'options' => [],
-        ];
-    }
+    protected $property_table_variable;
+
+    /**
+     * Object dari EntityInterface.
+     */
+    protected $parent;
 
     /**
      * Memulai instance.
      */
-    public function __construct($parent)
+    public function __construct(EntityInterface $parent)
     {
         $this->parent = $parent;
         $this->property_table_node = $this->getTableNodeProperties();
@@ -81,15 +59,15 @@ class NodeProperty
                 $this->property_table_variable[$key] = variable_get('node_' . $key . '_' . $node_type->type);
             }
         }
-
     }
 
     /**
      * Mengeset secara massal berbagai property yang didapat dari hasil parse
      * file Yaml.
      */
-    public function modify($info)
+    public function modify()
     {
+        $info = $this->parent->getInfo();
         $is_modified = false;
         $keys = array_keys($info);
         while ($key = array_shift($keys)) {
@@ -144,10 +122,50 @@ class NodeProperty
         }
         if ($this->is_property_table_variable_modified) {
             $this->is_property_table_variable_modified = false;
+            // todo, efisienkan ini.
             foreach (array_keys($this->getTableVariablesProperties()) as $key) {
-                variable_set('node_' . $key . '_' . $this->parent->getBundleName(), $this->property_table_variable[$key]);
+                $bundle_name = $this->parent->getBundleName();
+                if ($this->property_table_variable[$key] !== variable_get('node_' . $key . '_' . $bundle_name)) {
+                    variable_set('node_' . $key . '_' . $bundle_name, $this->property_table_variable[$key]);
+                }
             }
         }
+    }
+
+    /**
+     * Memberikan array berisi nama property default yang disimpan pada
+     * table node_type.
+     */
+    protected function getTableNodeProperties()
+    {
+        return [
+            'type' => null,
+            'name' => null,
+            'base' => 'node_content',
+            'module' => null,
+            'description' => '',
+            'help' => '',
+            'has_title' => 1,
+            'title_label' => 'Title',
+            'custom' => 1,
+            'modified' => 1,
+            'locked' => 0,
+            'disabled' => 0,
+            'orig_type' => null,
+        ];
+    }
+
+    /**
+     * Memberikan array berisi nama property tambahan yang disimpan pada
+     * table variable.
+     */
+    protected function getTableVariablesProperties()
+    {
+        return [
+            'preview' => 0,
+            'submitted' => 0,
+            'options' => [],
+        ];
     }
 
     /**

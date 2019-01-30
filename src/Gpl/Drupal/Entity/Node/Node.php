@@ -4,9 +4,9 @@ namespace Gpl\Drupal\Entity\Node;
 use Gpl\Application\Application;
 use Gpl\Application\ApplicationInterface;
 use Gpl\Drupal\Field\Field;
-use Gpl\Drupal\Variable\VariableManager as Variable;
+use Gpl\Drupal\Entity\EntityInterface;
 
-class Node implements ApplicationInterface
+class Node implements ApplicationInterface, EntityInterface
 {
     const ENTITY_TYPE = 'node';
 
@@ -15,25 +15,23 @@ class Node implements ApplicationInterface
      */
     protected static $storage = array();
 
+    /**
+     * Memberikan informasi bahwa bundle baru dibuat dan belum ada di database.
+     */
     protected $is_bundle_new = false;
 
     /**
      * Berisi entity bundle atau node type.
      */
-
     protected $bundle_name;
 
     /**
-     * Variable untuk menampung hasil analisis address (nama file YAML).
-     * Misalnya: nama file adalah (content.yml), sehingga address adalah
-     * `content`. Maka isi dari file YAML pada array dimensi pertama merupkan
-     * daftar nama-nama bundle, sehingga value dari property $analyze adalah
-     * `modify_bundles`.
+     * Hasil analyze().
      */
     protected $analyze;
 
     /**
-     * Instance dari NodeProperty.
+     * Instance dari NodePropertyInterface().
      */
     protected $property;
 
@@ -78,16 +76,23 @@ class Node implements ApplicationInterface
     }
 
     /**
-     * Set property $yaml.
+     * {@inheritdoc}
      */
-    public function setYaml($yaml)
+    public function setInfo($yaml)
     {
         $this->yaml = $yaml;
         return $this;
     }
+    /**
+     * {@inheritdoc}
+     */
+    public function getInfo()
+    {
+        return $this->yaml;
+    }
 
     /**
-     * Memberikan value dari property $bundle.
+     * {@inheritdoc}
      */
     public function getBundleName()
     {
@@ -95,7 +100,7 @@ class Node implements ApplicationInterface
     }
 
     /**
-     *
+     * {@inheritdoc}
      */
     public function isBundleNew()
     {
@@ -116,8 +121,7 @@ class Node implements ApplicationInterface
     }
 
     /**
-     * Melakukan analisis terkait object ini mau diapakan kedepannya.
-     * Kemudian populate property $analyze.
+     * {@inheritdoc}
      */
     public function analyze()
     {
@@ -126,19 +130,20 @@ class Node implements ApplicationInterface
     }
 
     /**
-     * Eksekusi class ini mau diapakan kedepannya berdasarkan hasil analyze.
+     * {@inheritdoc}
      */
     public function execute()
     {
         switch ($this->analyze) {
             case 'modify_bundle':
-                $this->modifyBundle($this->yaml);
+                $this->populateProperty();
+                $this->property->modify();
                 break;
         }
     }
 
     /**
-     * Melakukan aktivitas menulis kedalam database.
+     * {@inheritdoc}
      */
     public function write()
     {
@@ -147,21 +152,28 @@ class Node implements ApplicationInterface
     }
 
     /**
-     * Action modify each bundle.
+     * {@inheritdoc}
      */
-    protected function modifyBundle($info)
+    public function getDependencies()
     {
-        $this->populateProperty();
-        $this->property->modify($info);
+        return [];
     }
 
     /**
-     *
+     * Filled $property.
      */
     protected function populateProperty()
     {
         if (null === $this->property) {
-            $this->property = new NodeProperty($this);
+            $this->setProperty(new NodeProperty($this));
         }
+    }
+
+    /**
+     * Mengeset $property dengan NodePropertyInterface().
+     */
+    protected function setProperty(NodePropertyInterface $property)
+    {
+        $this->property = $property;
     }
 }

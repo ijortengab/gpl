@@ -65,3 +65,13 @@ default_options:
 Catatan:
 
 Jika content type `blog` sudah didefinisikan pada file  `content.blog.yml`, maka jangan mendefinisikannya juga pada file `content.yml` agar tidak terjadi override yang tidak diharapkan.
+
+Catatan:
+
+Beberapa nama field yang diblacklist:
+
+```
+name
+description
+title
+```

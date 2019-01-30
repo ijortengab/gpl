@@ -15,11 +15,15 @@ class Application
      */
     protected static $write_register = [];
 
+    /**
+     * Antrian hasil melihat address dari file `.yml`.
+     */
     protected static $queue = [];
 
+    /**
+     * Antrian baru yang dibuat oleh ApplicationInterface::execute().
+     */
     protected static $new_queue = [];
-
-    protected static $object_working = [];
 
     /**
      * Object instance dari ConfigManager.
@@ -40,7 +44,7 @@ class Application
      * Method yang digunakan untuk mendaftarkan object yang akan ditampung
      * kedalam property $write_register.
      */
-    public static function writeRegister($object)
+    public static function writeRegister(ApplicationInterface $object)
     {
         // Hindari duplikat.
         if (!in_array($object, self::$write_register)) {
@@ -71,9 +75,32 @@ class Application
      * Melakukan proses menulis didatabase. Semua object yang telah ter-register
      * di property static $write_register akan menjalankan method write().
      */
-    public function write()
+    protected function write()
     {
         $list = self::$write_register;
+        // Collecting dependencies.
+        $dependencies = ['module' => []];
+        foreach ($list as $object) {
+            $dependencies = array_merge_recursive($dependencies, $object->getDependencies());
+        }
+        $module_need_enable = [];
+        foreach ($dependencies['module'] as $module) {
+            if (!module_exists($module)) {
+                $module_need_enable[] = $module;
+            }
+        }
+        if (!empty($module_need_enable)) {
+            try {
+                if (!module_enable($module_need_enable)) {
+                    // todo.
+                }
+            }
+            catch (Exception $e) {
+                // todo.
+            }
+        }
+
+        // Write to Database.
         foreach ($list as $object) {
             $object->write();
         }
@@ -107,13 +134,14 @@ class Application
             foreach (static::$queue as $each) {
                 $object = $this->getObjetFromAddress($each['address'], $each['yaml']);
                 if ($object instanceof ApplicationInterface) {
-                    $object->setYaml($each['yaml'])->analyze()->execute();
+                    $object->setInfo($each['yaml'])->analyze()->execute();
                 }
             }
             static::$queue = [];
         }
         while (!empty(static::$new_queue));
         $this->write();
+        $drupal_messages = drupal_get_messages();
     }
 
     /**

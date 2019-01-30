@@ -1,11 +1,10 @@
 <?php
-
 namespace Gpl\Drupal\Entity;
 
 class Entity
 {
     /**
-     * Memberikan informasi namespace baru pada entity tertentu.
+     * Memberikan informasi object baru pada entity tertentu.
      */
     public static function getType($type)
     {
