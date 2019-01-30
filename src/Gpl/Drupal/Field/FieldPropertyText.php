@@ -1,8 +1,6 @@
 <?php
 namespace Gpl\Drupal\Field;
 
-use Gpl\Application\Utility;
-
 class FieldPropertyText extends AbstractFieldProperty implements FieldPropertyInterface
 {
     const FIELD_TYPE = 'text';
@@ -38,7 +36,7 @@ class FieldPropertyText extends AbstractFieldProperty implements FieldPropertyIn
             'field_name' => $this->parent->getFieldName(),
             'entity_type' => $this->parent->getParentEntity()::ENTITY_TYPE,
             'bundle' => $this->parent->getParentEntity()->getBundleName(),
-            'label' => Utility::createLabel($this->parent->getFieldName()),
+            'label' => null,
             'widget' => [
                 'type' => $this::FIELD_WIDGET,
                 'weight' => '-3',

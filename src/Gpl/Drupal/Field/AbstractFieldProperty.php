@@ -2,6 +2,7 @@
 namespace Gpl\Drupal\Field;
 
 use Gpl\Application\Application;
+use Gpl\Application\Utility;
 
 abstract class AbstractFieldProperty
 {
@@ -83,6 +84,9 @@ abstract class AbstractFieldProperty
         }
         if ($this->is_property_table_field_instance_modified) {
             if ($this->parent->isFieldInstanceNew()) {
+                if (!isset($this->property_table_field_instance['label'])) {
+                    $this->property_table_field_instance['label'] = Utility::createLabel($this->parent->getFieldName());
+                }
                 field_create_instance($this->property_table_field_instance);
             }
             else {

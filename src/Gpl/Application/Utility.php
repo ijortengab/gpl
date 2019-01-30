@@ -25,14 +25,15 @@ class Utility
     {
         $get_class = get_class($object);
         switch ($get_class) {
-            case 'Gpl\Drupal\Field\Field':
+            case 'Gpl\\Drupal\\Field\\Field':
                 $json = [
                     'name' => $object->getFieldName(),
                     'parent' => $object->getParentEntity()::ENTITY_TYPE . '.' . $object->getParentEntity()->getBundleName(),
                 ];
                 return $get_class . json_encode($json);
 
-            case 'Gpl\Drupal\Entity\Node\Node':
+            case 'Gpl\\Drupal\\Entity\\Node\\Node':
+            case 'Gpl\\Drupal\\Entity\\TaxonomyTerm\\TaxonomyTerm':
                 $json = [
                     'bundle' => $object->getBundleName(),
                 ];

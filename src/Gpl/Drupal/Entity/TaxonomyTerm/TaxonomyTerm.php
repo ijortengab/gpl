@@ -1,17 +1,17 @@
 <?php
-namespace Gpl\Drupal\Entity\Node;
+namespace Gpl\Drupal\Entity\TaxonomyTerm;
 
 use Gpl\Application\Application;
 use Gpl\Application\ApplicationInterface;
 use Gpl\Drupal\Field\Field;
 use Gpl\Drupal\Entity\EntityInterface;
 
-class Node implements ApplicationInterface, EntityInterface
+class TaxonomyTerm implements ApplicationInterface, EntityInterface
 {
-    const ENTITY_TYPE = 'node';
+    const ENTITY_TYPE = 'taxonomy_term';
 
     /**
-     * Menampung instance dari object Node.
+     * Menampung instance dari object TaxonomyTerm.
      */
     protected static $storage = array();
 
@@ -19,6 +19,8 @@ class Node implements ApplicationInterface, EntityInterface
      * Memberikan informasi bahwa bundle baru dibuat dan belum ada di database.
      */
     protected $is_bundle_new = false;
+
+    protected $is_dependencies_fulfilled = false;
 
     /**
      * Berisi entity bundle atau node type.
@@ -31,7 +33,7 @@ class Node implements ApplicationInterface, EntityInterface
     protected $analyze;
 
     /**
-     * Instance dari NodePropertyInterface().
+     * Instance dari TaxonomyTermPropertyInterface().
      */
     protected $property;
 
@@ -61,14 +63,32 @@ class Node implements ApplicationInterface, EntityInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getDependencies()
+    {
+        return[
+            'module' => ['taxonomy'],
+        ];
+    }
+
+    /**
      * Construct. Fleksibel baik bundle belum didefinisikan, atau bundle belum
      * ada di database.
      */
     public function __construct($bundle_name)
     {
         $this->bundle_name = $bundle_name;
-        $node_type = node_type_get_type($bundle_name);
-        if ($node_type === false) {
+        $is_dependencies_fulfilled = $this->is_dependencies_fulfilled = Application::analyzeDependencies($this->getDependencies());
+
+        $new = false;
+        if ($is_dependencies_fulfilled === false) {
+            $new = true;
+        }
+        elseif (taxonomy_vocabulary_machine_name_load($bundle_name) === false) {
+            $new = true;
+        }
+        if ($new) {
             $this->is_bundle_new = true;
             Application::writeRegister($this);
         }
@@ -153,19 +173,11 @@ class Node implements ApplicationInterface, EntityInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getDependencies()
-    {
-        return [];
-    }
-
-    /**
-     * Node tidak mempunyai dependensi.
+     *
      */
     public function isDependenciesFulfilled()
     {
-        return true;
+        return $this->is_dependencies_fulfilled;
     }
 
     /**
@@ -174,14 +186,14 @@ class Node implements ApplicationInterface, EntityInterface
     protected function populateProperty()
     {
         if (null === $this->property) {
-            $this->setProperty(new NodeProperty($this));
+            $this->setProperty(new TaxonomyTermProperty($this));
         }
     }
 
     /**
-     * Mengeset $property dengan NodePropertyInterface().
+     * Mengeset $property dengan TaxonomyTermPropertyInterface().
      */
-    protected function setProperty(NodePropertyInterface $property)
+    protected function setProperty(TaxonomyTermPropertyInterface $property)
     {
         $this->property = $property;
     }

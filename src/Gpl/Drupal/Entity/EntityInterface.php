@@ -12,4 +12,9 @@ interface EntityInterface
      * Memberikan informasi bahwa bundle belum ada didatabase.
      */
     public function isBundleNew();
+
+    /**
+     *
+     */
+    public function isDependenciesFulfilled();
 }

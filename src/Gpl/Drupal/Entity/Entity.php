@@ -11,6 +11,8 @@ class Entity
         switch ($type) {
             case 'node':
                 return '\\Gpl\\Drupal\\Entity\\Node\\Node';
+            case 'taxonomy_term':
+                return '\\Gpl\\Drupal\\Entity\\TaxonomyTerm\\TaxonomyTerm';
         }
     }
 }

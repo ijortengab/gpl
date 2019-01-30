@@ -53,6 +53,31 @@ class Application
     }
 
     /**
+     *
+     */
+    public static function analyzeDependencies($info, $return_solution = false)
+    {
+        $solution = [];
+        $info = array_merge_recursive(['module' => []], $info);
+        foreach ($info['module'] as $module) {
+            if (!module_exists($module)) {
+                switch ($return_solution) {
+                    case false:
+                        return false;
+                    default:
+                        $solution['module_enable'][] = $module;
+                        break;
+                }
+            }
+        }
+        if ($return_solution) {
+            return $solution;
+        }
+        return true;
+    }
+
+
+    /**
      * Memulai instance.
      */
     public function __construct()
@@ -125,7 +150,7 @@ class Application
             $address = $info->name;
             $address = $this->expandAddressName($address);
             $contents = file_get_contents($path);
-            $yaml = Yaml::parse($contents);
+            $yaml = (array) Yaml::parse($contents);
             static::$queue[] = ['address' => $address, 'yaml' => $yaml];
         }
         do {
@@ -199,7 +224,7 @@ class Application
             case 'user':
                 $explode[0] = 'entity.type.user.bundle.user.field';
                 return implode('.', $explode);
-            case 'term':
+            case 'vocabulary':
                 $explode[0] = 'entity.type.taxonomy_term.bundle';
                 return implode('.', $explode);
         }
