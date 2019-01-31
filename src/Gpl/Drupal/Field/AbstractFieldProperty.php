@@ -36,7 +36,7 @@ abstract class AbstractFieldProperty
             $this->is_property_table_field_instance_modified = true;
         }
         else {
-            $instance_source = field_read_instance($this->parent->getParentEntity()::ENTITY_TYPE, $this->parent->getFieldName(), $this->parent->getParentEntity()->getBundleName());
+            $instance_source = field_read_instance($this->parent->getParentEntity()->getEntityType(), $this->parent->getFieldName(), $this->parent->getParentEntity()->getBundleName());
             $this->property_table_field_instance = array_merge($this->property_table_field_instance, $instance_source);
         }
     }
@@ -90,7 +90,7 @@ abstract class AbstractFieldProperty
                 field_create_instance($this->property_table_field_instance);
             }
             else {
-                $instance_source = field_read_instance($this->parent->getParentEntity()::ENTITY_TYPE, $this->parent->getFieldName(), $this->parent->getParentEntity()->getBundleName());
+                $instance_source = field_read_instance($this->parent->getParentEntity()->getEntityType(), $this->parent->getFieldName(), $this->parent->getParentEntity()->getBundleName());
                 $instance = array_merge($instance_source, $this->property_table_field_instance);
                 field_update_instance($instance);
             }

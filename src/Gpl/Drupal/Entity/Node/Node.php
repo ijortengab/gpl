@@ -76,6 +76,14 @@ class Node extends AbstractEntity implements ApplicationInterface, EntityInterfa
     }
 
     /**
+     *
+     */
+    public function getEntityType()
+    {
+        return static::getEntityType();
+    }
+
+    /**
      * Filled $property.
      */
     protected function populateProperty()

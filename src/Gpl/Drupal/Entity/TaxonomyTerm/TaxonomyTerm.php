@@ -85,6 +85,14 @@ class TaxonomyTerm extends AbstractEntity implements ApplicationInterface, Entit
     }
 
     /**
+     *
+     */
+    public function getEntityType()
+    {
+        return static::ENTITY_TYPE;
+    }
+
+    /**
      * Filled $property.
      */
     protected function populateProperty()

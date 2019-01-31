@@ -13,6 +13,8 @@ class Entity
                 return '\\Gpl\\Drupal\\Entity\\Node\\Node';
             case 'taxonomy_term':
                 return '\\Gpl\\Drupal\\Entity\\TaxonomyTerm\\TaxonomyTerm';
+            case 'user':
+                return '\\Gpl\\Drupal\\Entity\\User\\User';
         }
     }
 }

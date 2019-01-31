@@ -177,7 +177,8 @@ class Application
      *   - entity.type.node.bundle.article
      * todo: Gunakan getObjetFromAddress($name): ApplicationInterface
      * return: null, string atau object. jika string, maka berarti ada
-     * penambahan queue. jika null berarti nama field_name tidak valid.
+     * penambahan queue. jika null berarti nama field_name tidak valid atau
+     * bundle_name pada entity user tidak bernama "user".
      */
     protected function getObjetFromAddress($name, $yaml)
     {
@@ -205,6 +206,7 @@ class Application
                     $callback = array($object, $method);
                 }
                 $object = call_user_func_array($callback, $args);
+
             }
         }
         return $object;
@@ -226,6 +228,9 @@ class Application
                 return implode('.', $explode);
             case 'vocabulary':
                 $explode[0] = 'entity.type.taxonomy_term.bundle';
+                return implode('.', $explode);
+            case 'people':
+                $explode[0] = 'entity.type.user.bundle.user.field';
                 return implode('.', $explode);
         }
         return $name;

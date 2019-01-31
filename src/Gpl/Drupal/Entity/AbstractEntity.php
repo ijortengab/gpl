@@ -5,18 +5,12 @@ use Gpl\Drupal\Field\Field;
 
 abstract class AbstractEntity
 {
-    protected $is_dependencies_fulfilled = false;
-
     /**
      * Menampung instance dari object EntityInterface.
      */
     protected static $bundles = array();
 
-    /**
-     * Berisi entity bundle atau node type.
-     */
-    protected $bundle_name;
-
+    protected $is_dependencies_fulfilled = false;
 
     /**
      * Memberikan informasi bahwa bundle baru dibuat dan belum ada di database.
@@ -24,9 +18,9 @@ abstract class AbstractEntity
     protected $is_bundle_new = false;
 
     /**
-     * Menampung instance dari object Field.
+     * Berisi entity bundle atau node type.
      */
-    protected $fields = array();
+    protected $bundle_name;
 
     /**
      * Array hasil parse Yaml.
@@ -35,7 +29,23 @@ abstract class AbstractEntity
      */
     protected $info;
 
+    /**
+     * Menampung instance dari object Field.
+     */
+    protected $fields = array();
 
+    /**
+     * Mendapatkan dan autocreate instance self dengan kemudian menyimpannya
+     * dalam property $bundles. Identifiernya adalah entity bundle name.
+     */
+    public static function getBundle($machine_name)
+    {
+        if (array_key_exists($machine_name, static::$bundles)) {
+            return static::$bundles[$machine_name];
+        }
+        static::$bundles[$machine_name] = new static($machine_name);
+        return static::$bundles[$machine_name];
+    }
 
     /**
      * {@inheritdoc}
@@ -51,19 +61,6 @@ abstract class AbstractEntity
     public function getBundleName()
     {
         return $this->bundle_name;
-    }
-
-    /**
-     * Mendapatkan dan autocreate instance self dengan kemudian menyimpannya
-     * dalam property $bundles. Identifiernya adalah entity bundle name.
-     */
-    public static function getBundle($machine_name)
-    {
-        if (array_key_exists($machine_name, static::$bundles)) {
-            return static::$bundles[$machine_name];
-        }
-        static::$bundles[$machine_name] = new static($machine_name);
-        return static::$bundles[$machine_name];
     }
 
     /**

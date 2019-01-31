@@ -73,7 +73,7 @@ class Field implements ApplicationInterface, FieldInterface
         else {
             $this->type = $field_info['type'];
         }
-        $field_instance = field_info_instance($this->parent::ENTITY_TYPE, $field_name, $this->parent->getBundleName());
+        $field_instance = field_info_instance($this->parent->getEntityType(), $field_name, $this->parent->getBundleName());
         if (null === $field_instance) {
             $this->is_field_instance_new = true;
             Application::writeRegister($this);
