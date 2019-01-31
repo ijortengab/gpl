@@ -176,8 +176,8 @@ class Application
      *   - entity.type.node.bundle
      *   - entity.type.node.bundle.article
      * todo: Gunakan getObjetFromAddress($name): ApplicationInterface
-     * return: string atau object. jika string, maka berarti ada penambahan
-     * queue.
+     * return: null, string atau object. jika string, maka berarti ada
+     * penambahan queue. jika null berarti nama field_name tidak valid.
      */
     protected function getObjetFromAddress($name, $yaml)
     {

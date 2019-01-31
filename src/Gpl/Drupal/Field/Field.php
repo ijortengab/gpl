@@ -3,7 +3,6 @@ namespace Gpl\Drupal\Field;
 
 use Gpl\Application\Application;
 use Gpl\Application\ApplicationInterface;
-use Gpl\Application\Utility;
 use Gpl\Drupal\Entity\EntityInterface;
 
 class Field implements ApplicationInterface, FieldInterface
@@ -45,6 +44,19 @@ class Field implements ApplicationInterface, FieldInterface
      * Object EntityInterface().
      */
     protected $parent;
+
+    /**
+     *
+     */
+    public static function getInstance($field_name, EntityInterface $parent)
+    {
+        if (in_array($field_name, FieldValidation::$reserved_field_name)) {
+            // todo. set log.
+        }
+        else {
+            return new static($field_name, $parent);
+        }
+    }
 
     /**
      * Memulai instance.
@@ -93,7 +105,6 @@ class Field implements ApplicationInterface, FieldInterface
      */
     public function isFieldNew()
     {
-
         return $this->is_field_new;
     }
 

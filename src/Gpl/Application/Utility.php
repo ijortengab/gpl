@@ -23,6 +23,9 @@ class Utility
      */
     public static function getInfoObject($object)
     {
+        if (null === $object) {
+            return;
+        }
         $get_class = get_class($object);
         switch ($get_class) {
             case 'Gpl\\Drupal\\Field\\Field':
