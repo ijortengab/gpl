@@ -81,7 +81,7 @@ class User extends AbstractEntity implements ApplicationInterface, EntityInterfa
      */
     public function getEntityType()
     {
-        return static::getEntityType();
+        return static::ENTITY_TYPE;
     }
 
     /**
