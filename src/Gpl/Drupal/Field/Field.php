@@ -190,6 +190,7 @@ class Field implements ApplicationInterface, FieldInterface
                     $this->type = 'text';
                 }
             }
+
             switch ($this->type) {
                 case 'image':
                     $this->property = new FieldPropertyImage($this);
@@ -203,7 +204,7 @@ class Field implements ApplicationInterface, FieldInterface
                     die('Todo.'); // Todo. Urus ini.
                     break;
             }
-            $this->setDependencies($this->property->getDependencies());
+            // $this->setDependencies($this->property->getDependencies());
         }
     }
 

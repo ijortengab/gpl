@@ -103,7 +103,6 @@ class TaxonomyTerm extends AbstractEntity implements ApplicationInterface, Entit
         return static::ENTITY_TYPE;
     }
 
-
     public function setDependencies(ApplicationEvent $event)
     {
         $event->addDependencies($this->getDependencies());

@@ -10,13 +10,13 @@ class FieldValidation
     public static $reserved_field_name = [
         // Node.
         'nid', 'vid', 'type', 'title', 'language',
-        // Taxonomy.
-        'tid', 'vocabulary_machine_name', 'name',
+        // Taxonomy Term.
+        'tid', 'vocabulary_machine_name', 'name', 'description',
         // File.
         'fid', 'filename',
         // Taxonomy Vocabulary.
         'vid', 'name',
         // User.
-        'uid',
+        'uid', 'account', 'timezone',
     ];
 }

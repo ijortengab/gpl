@@ -1,11 +1,32 @@
 <?php
 namespace Gpl\Drupal\Field;
 
-class FieldPropertyImage extends AbstractFieldProperty implements FieldPropertyInterface
+use Gpl\Application\Application;
+use Gpl\Application\ApplicationEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
+class FieldPropertyImage extends AbstractFieldProperty implements FieldPropertyInterface, EventSubscriberInterface
 {
     const FIELD_TYPE = 'image';
 
     const FIELD_WIDGET = 'image_image';
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [Application::DEPENDENCIES => 'setDependencies'];
+    }
+
+    /**
+     *
+     */
+    public function __construct(FieldInterface $parent)
+    {
+        Application::getEventDispatcher()->addSubscriber($this);
+        parent::__construct($parent);
+    }
 
     /**
      *
@@ -15,6 +36,14 @@ class FieldPropertyImage extends AbstractFieldProperty implements FieldPropertyI
         return[
             'module' => ['image'],
         ];
+    }
+
+    /**
+     *
+     */
+    public function setDependencies(ApplicationEvent $event)
+    {
+        $event->addDependencies($this->getDependencies());
     }
 
     /**
