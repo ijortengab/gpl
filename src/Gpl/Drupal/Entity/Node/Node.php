@@ -31,7 +31,7 @@ class Node extends AbstractEntity implements ApplicationInterface, EntityInterfa
         $node_type = node_type_get_type($bundle_name);
         if ($node_type === false) {
             $this->is_bundle_new = true;
-            Application::writeRegister($this);
+            Application::getEventDispatcher()->addListener(Application::WRITE, [$this, 'write']);
         }
         return $this;
     }

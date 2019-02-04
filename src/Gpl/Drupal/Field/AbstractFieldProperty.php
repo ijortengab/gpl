@@ -57,7 +57,7 @@ abstract class AbstractFieldProperty
             }
         }
         if ($is_modified) {
-            Application::writeRegister($this->parent);
+            Application::getEventDispatcher()->addListener(Application::WRITE, [$this->parent, 'write']);
         }
     }
 

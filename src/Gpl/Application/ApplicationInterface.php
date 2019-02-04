@@ -22,14 +22,4 @@ interface ApplicationInterface
      * Eksekusi object.
      */
     public function execute();
-
-    /**
-     * Melakukan eksekusi penulisan ke database.
-     */
-    public function write();
-
-    /**
-     * Mendapatkan dependensi dari objek.
-     */
-    public function getDependencies();
 }

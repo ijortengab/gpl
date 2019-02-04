@@ -68,7 +68,7 @@ class Field implements ApplicationInterface, FieldInterface
         $field_info = field_info_field($field_name);
         if (null === $field_info) {
             $this->is_field_new = true;
-            Application::writeRegister($this);
+            Application::getEventDispatcher()->addListener(Application::WRITE, [$this, 'write']);
         }
         else {
             $this->type = $field_info['type'];
@@ -76,7 +76,7 @@ class Field implements ApplicationInterface, FieldInterface
         $field_instance = field_info_instance($this->parent->getEntityType(), $field_name, $this->parent->getBundleName());
         if (null === $field_instance) {
             $this->is_field_instance_new = true;
-            Application::writeRegister($this);
+            Application::getEventDispatcher()->addListener(Application::WRITE, [$this, 'write']);
         }
         else {
             // todo.

@@ -6,14 +6,16 @@ use Gpl\Data\Content\ContentManager;
 use Gpl\Data\Structure\StructureManager;
 use Gpl\Drupal\Bootstrap\Bootstrap;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class Application
 {
     /**
-     * Array untuk menampung object yang akan melakukan update informasi
-     * kedalam database.
+     * Namespace of EventDispatcher.
      */
-    protected static $write_register = [];
+    const WRITE = 'gpl.application.write';
+
+    const DEPENDENCIES = 'gpl.application.dependencies';
 
     /**
      * Antrian hasil melihat address dari file `.yml`.
@@ -24,6 +26,8 @@ class Application
      * Antrian baru yang dibuat oleh ApplicationInterface::execute().
      */
     protected static $new_queue = [];
+
+    protected static $event_dispatcher;
 
     /**
      * Object instance dari ConfigManager.
@@ -39,18 +43,6 @@ class Application
      * Object instance dari StructureManager.
      */
     protected $structure;
-
-    /**
-     * Method yang digunakan untuk mendaftarkan object yang akan ditampung
-     * kedalam property $write_register.
-     */
-    public static function writeRegister(ApplicationInterface $object)
-    {
-        // Hindari duplikat.
-        if (!in_array($object, self::$write_register)) {
-            self::$write_register[] = $object;
-        }
-    }
 
     /**
      *
@@ -76,6 +68,16 @@ class Application
         return true;
     }
 
+    /**
+     *
+     */
+    public static function getEventDispatcher()
+    {
+        if (null === static::$event_dispatcher) {
+            static::$event_dispatcher = new EventDispatcher();
+        }
+        return static::$event_dispatcher;
+    }
 
     /**
      * Memulai instance.
@@ -102,12 +104,10 @@ class Application
      */
     protected function write()
     {
-        $list = self::$write_register;
         // Collecting dependencies.
-        $dependencies = ['module' => []];
-        foreach ($list as $object) {
-            $dependencies = array_merge_recursive($dependencies, $object->getDependencies());
-        }
+        $event = new ApplicationEvent;
+        static::getEventDispatcher()->dispatch(static::DEPENDENCIES, $event);
+        $dependencies = $event->getDependencies();
         $module_need_enable = [];
         foreach ($dependencies['module'] as $module) {
             if (!module_exists($module)) {
@@ -124,11 +124,8 @@ class Application
                 // todo.
             }
         }
-
         // Write to Database.
-        foreach ($list as $object) {
-            $object->write();
-        }
+        static::getEventDispatcher()->dispatch(static::WRITE);
     }
 
     /**
@@ -165,7 +162,9 @@ class Application
             static::$queue = [];
         }
         while (!empty(static::$new_queue));
+
         $this->write();
+
         $drupal_messages = drupal_get_messages();
     }
 

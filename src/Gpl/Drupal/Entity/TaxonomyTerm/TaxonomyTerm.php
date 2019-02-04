@@ -2,11 +2,13 @@
 namespace Gpl\Drupal\Entity\TaxonomyTerm;
 
 use Gpl\Application\Application;
+use Gpl\Application\ApplicationEvent;
 use Gpl\Application\ApplicationInterface;
 use Gpl\Drupal\Entity\EntityInterface;
 use Gpl\Drupal\Entity\AbstractEntity;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class TaxonomyTerm extends AbstractEntity implements ApplicationInterface, EntityInterface
+class TaxonomyTerm extends AbstractEntity implements ApplicationInterface, EntityInterface, EventSubscriberInterface
 {
     const ENTITY_TYPE = 'taxonomy_term';
 
@@ -21,11 +23,20 @@ class TaxonomyTerm extends AbstractEntity implements ApplicationInterface, Entit
     protected $property;
 
     /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [Application::DEPENDENCIES => 'setDependencies'];
+    }
+
+    /**
      * Construct. Fleksibel baik bundle belum didefinisikan, atau bundle belum
      * ada di database.
      */
     public function __construct($bundle_name)
     {
+        Application::getEventDispatcher()->addSubscriber($this);
         $this->bundle_name = $bundle_name;
         $is_dependencies_fulfilled = $this->is_dependencies_fulfilled = Application::analyzeDependencies($this->getDependencies());
 
@@ -38,7 +49,7 @@ class TaxonomyTerm extends AbstractEntity implements ApplicationInterface, Entit
         }
         if ($new) {
             $this->is_bundle_new = true;
-            Application::writeRegister($this);
+            Application::getEventDispatcher()->addListener(Application::WRITE, [$this, 'write']);
         }
         return $this;
     }
@@ -79,7 +90,7 @@ class TaxonomyTerm extends AbstractEntity implements ApplicationInterface, Entit
      */
     public function getDependencies()
     {
-        return[
+        return [
             'module' => ['taxonomy'],
         ];
     }
@@ -90,6 +101,12 @@ class TaxonomyTerm extends AbstractEntity implements ApplicationInterface, Entit
     public function getEntityType()
     {
         return static::ENTITY_TYPE;
+    }
+
+
+    public function setDependencies(ApplicationEvent $event)
+    {
+        $event->addDependencies($this->getDependencies());
     }
 
     /**

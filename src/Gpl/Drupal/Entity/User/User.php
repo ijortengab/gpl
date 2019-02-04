@@ -69,14 +69,6 @@ class User extends AbstractEntity implements ApplicationInterface, EntityInterfa
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getDependencies()
-    {
-        return [];
-    }
-
-    /**
      *
      */
     public function getEntityType()
