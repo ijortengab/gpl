@@ -14,6 +14,8 @@ class Field implements ApplicationInterface, FieldInterface
 
     protected $is_field_instance_new = false;
 
+    protected $is_written = false;
+
     /**
      * String berupa nama field dalam format machine name.
      * Populated by __construct().
@@ -161,8 +163,12 @@ class Field implements ApplicationInterface, FieldInterface
      */
     public function write()
     {
-        $this->populateProperty();
-        $this->property->write();
+        // Prevent duplicate.
+        if ($this->is_written === false) {
+            $this->is_written = true;
+            $this->populateProperty();
+            $this->property->write();
+        }
     }
 
     /**

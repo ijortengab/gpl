@@ -10,6 +10,8 @@ class Node extends AbstractEntity implements ApplicationInterface, EntityInterfa
 {
     const ENTITY_TYPE = 'node';
 
+    protected $is_written = false;
+
     /**
      * Hasil analyze().
      */
@@ -63,8 +65,12 @@ class Node extends AbstractEntity implements ApplicationInterface, EntityInterfa
      */
     public function write()
     {
-        $this->populateProperty();
-        return $this->property->write();
+        // Prevent duplicate.
+        if ($this->is_written === false) {
+            $this->is_written = true;
+            $this->populateProperty();
+            $this->property->write();
+        }
     }
 
     /**

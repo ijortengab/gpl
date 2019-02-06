@@ -12,6 +12,8 @@ class TaxonomyTerm extends AbstractEntity implements ApplicationInterface, Entit
 {
     const ENTITY_TYPE = 'taxonomy_term';
 
+    protected $is_written = false;
+
     /**
      * Hasil analyze().
      */
@@ -81,8 +83,12 @@ class TaxonomyTerm extends AbstractEntity implements ApplicationInterface, Entit
      */
     public function write()
     {
-        $this->populateProperty();
-        return $this->property->write();
+        // Prevent duplicate.
+        if ($this->is_written === false) {
+            $this->is_written = true;
+            $this->populateProperty();
+            $this->property->write();
+        }
     }
 
     /**
