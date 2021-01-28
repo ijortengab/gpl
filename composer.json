@@ -1,0 +1,13 @@
+{
+    "name": "ijortengab/gpl",
+    "description": "Cara cepat bikin system Gak Pake Lama.",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "IjorTengab",
+            "email": "m_roji28@yahoo.com"
+        }
+    ],
+    "require": {}
+}
