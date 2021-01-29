@@ -9,5 +9,11 @@
             "email": "m_roji28@yahoo.com"
         }
     ],
-    "require": {}
+    "autoload": {
+        "psr-4": {"Gpl\\": "src/Gpl/"}
+    },
+    "require": {
+        "symfony/yaml": "^4.0",
+        "symfony/process": "^4.0"
+    }
 }
