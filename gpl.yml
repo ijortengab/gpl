@@ -1,0 +1,48 @@
+# References
+environment_list:
+ - local_pc # Ubuntu 18.04 on WSL 2 on Windows 10 at Asus PC
+ - local_laptop # Ubuntu 20.04 on WSL 2 on Windows 10 at Thinkpad Laptop
+ - production # Ubuntu 18.04 at DigitalOcean VPS
+ - staging # Ubuntu 18.04 at Linode VPS
+
+web_server_list:
+ - nginx_1
+
+site_list:
+ - org
+ - org_finance
+ - org_academic
+ - org_elearning
+
+database_list:
+ - mysql_1
+
+# Environment
+environment:
+  local_pc:
+    _label: "Localhost PC Ubuntu 20.04"
+    web_server: nginx_1
+    site: org
+
+# Web Server
+web_server:
+  nginx_1:
+    _program: nginx
+    _base_root: /var/www
+
+# Database
+
+# Site
+
+site:
+  org:
+    _generator: drupal
+    host:
+      localhost: org.localhost
+      local_pc: org.localhost
+      production: org.systemix.id
+  org_fin:
+    _parent: org
+    host:
+      localhost: finance.org.localhost
+      production: finance.org.systemix.id
