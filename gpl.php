@@ -11,11 +11,10 @@ use Symfony\Component\Process\ExecutableFinder;
 
 require 'vendor/autoload.php';
 
-$cwd = isset($_SERVER['PWD']) && is_dir($_SERVER['PWD']) ? $_SERVER['PWD'] : getcwd();
-
 if (!file_exists("gpl.yml")) {
     die('The gpl.yml file not found.'.PHP_EOL);
 }
+$cwd = isset($_SERVER['PWD']) && is_dir($_SERVER['PWD']) ? $_SERVER['PWD'] : getcwd();
 
 // Define variable ENVIRONMENT in two locations. Example:
 // 1. /etc/bash.bashrc
@@ -33,10 +32,11 @@ if (!file_exists("gpl.yml")) {
 try {
     $config = new Config(Yaml::parseFile($cwd.'/gpl.yml'));
     $environment = new Environment(getenv('ENVIRONMENT'));
-    $environment->setConfig($config);
-    $environment->build();
+    // Set Yaml Configuration, then populate all object instance based on
+    // YAML Configuration.
+    $environment->setConfig($config)->populateAll();
     $generator = new Generator($environment);
-    $generator->buildSite();
+    $generator->execute();
 }
 catch (Exception $e) {
     die($e->getMessage().PHP_EOL);

@@ -6,7 +6,6 @@ class Site
 {
     protected $name;
     protected $generator;
-    protected $generator_object;
     protected $host = [];
 
     /**
@@ -15,11 +14,16 @@ class Site
     public function __construct($name, array $info = [])
     {
         $this->name = $name;
+        // pe er disini
         if (isset($info['host'])) {
             $this->host = $info['host'];
         }
-        if (isset($info['_generator'])) {
-            $this->generator = $info['_generator'];
+        if (isset($info['generator'])) {
+            switch ($info['generator']) {
+                case 'drupal':
+                    $this->generator = new Site\Drupal;
+                    break;
+            }
         }
         return $this;
     }
@@ -47,22 +51,15 @@ class Site
      */
     public function getGenerator()
     {
-        switch ($this->generator) {
-            case 'drupal':
-                if (null === $this->generator_object) {
-                    $this->generator_object = new Generator\Drupal;
-                }
-                return $this->generator_object;
-                break;
-
-            case '':
-                // Do something.
-                break;
-
-            default:
-                // Do something.
-                break;
-        }
-
+        return $this->generator;
     }
+    /**
+     *
+     */
+    public function build()
+    {
+
+        // return $this;
+    }
+
 }

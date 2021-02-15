@@ -5,6 +5,7 @@ namespace Gpl;
 class Environment
 {
 
+    protected $user_process;
     protected $name;
     protected $label;
     protected $config;
@@ -16,16 +17,31 @@ class Environment
      */
     public function __construct($name)
     {
+        // Validate.
+        if (empty($name)) {
+            throw new Exception('Environment name not defined.');
+        }
         $this->name = $name;
+        $uid = \posix_getpwuid(posix_geteuid());
+        $this->user_process = $uid['name'];
         return $this;
     }
 
     /**
      *
      */
-    public function __toString()
+    public function getUserProcess()
     {
 
+        return $this->user_process;
+    }
+
+
+    /**
+     *
+     */
+    public function __toString()
+    {
         return $this->name;
     }
 
@@ -41,13 +57,9 @@ class Environment
     /**
      * Build all object instance that relate with environment.
      */
-    public function build()
+    public function populateAll()
     {
-        if (empty($this->name)) {
-            throw new Exception('Environment name not defined.');
-        }
         $environment_info = $this->config->getEnvironmentInfo($this->name);
-
         if (isset($environment_info['_label'])) {
             $this->label = $environment_info['_label'];
         }
@@ -65,10 +77,6 @@ class Environment
             }
             $this->site = new Site($environment_info['site'], $site_info);
         }
-
-
-
-        // return $this;
     }
 
     /**
@@ -94,6 +102,4 @@ class Environment
     {
         return $this->site;
     }
-
-
 }
