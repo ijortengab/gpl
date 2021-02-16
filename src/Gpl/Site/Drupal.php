@@ -44,14 +44,12 @@ class Drupal
         if ($drupalFinder->locateRoot($this->working_directory)) {
             $drupalRoot = $drupalFinder->getDrupalRoot();
             $composerRoot = $drupalFinder->getComposerRoot();
-
         }
         else {
             // drupal belum diinstall.
             $this->downloadDrupalCodeBase();
         }
         return;
-
     }
 
     /**
