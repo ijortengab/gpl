@@ -26,7 +26,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplIspconfigSetupInternalCommand_printVersion) == function ]] || GplIspconfigSetupInternalCommand_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplIspconfigSetupInternalCommand_printHelp) == function ]] || GplIspconfigSetupInternalCommand_printHelp() {
     cat << EOF
@@ -304,19 +304,6 @@ if [ -z "$root_sure" ];then
     ____
 fi
 
-chapter Populate variable.
-
-phpmyadmin_install_dir=/usr/local/share/phpmyadmin/"$phpmyadmin_version"
-[ -d "$phpmyadmin_install_dir" ] || { red Directory not found: "$phpmyadmin_install_dir"; x; }
-roundcube_install_dir=/usr/local/share/roundcube/"$roundcube_version"
-[ -d "$roundcube_install_dir" ] || { red Directory not found: "$roundcube_install_dir"; x; }
-scripts_dir=/usr/local/share/ispconfig/scripts
-[ -d "$scripts_dir" ] || { red Directory not found: "$scripts_dir"; x; }
-code phpmyadmin_install_dir="$phpmyadmin_install_dir"
-code roundcube_install_dir="$roundcube_install_dir"
-code scripts_dir="$scripts_dir"
-____
-
 chapter Dump variable of ISPConfig Credential
 databaseCredentialIspconfig
 ispconfig_db_user_host="$ISPCONFIG_DB_USER_HOST"
@@ -386,6 +373,18 @@ if [ -n "$notfound" ];then
     done
     ____
 fi
+
+chapter Populate variable.
+phpmyadmin_install_dir=/usr/local/share/phpmyadmin/"$phpmyadmin_version"
+[ -d "$phpmyadmin_install_dir" ] || { red Directory not found: "$phpmyadmin_install_dir"; x; }
+roundcube_install_dir=/usr/local/share/roundcube/"$roundcube_version"
+[ -d "$roundcube_install_dir" ] || { red Directory not found: "$roundcube_install_dir"; x; }
+scripts_dir=/usr/local/share/ispconfig/scripts
+[ -d "$scripts_dir" ] || { red Directory not found: "$scripts_dir"; x; }
+code phpmyadmin_install_dir="$phpmyadmin_install_dir"
+code roundcube_install_dir="$roundcube_install_dir"
+code scripts_dir="$scripts_dir"
+____
 
 chapter Mengecek '`'ispconfig.sh'`' command.
 isFileExists /usr/local/share/ispconfig/bin/ispconfig.sh
