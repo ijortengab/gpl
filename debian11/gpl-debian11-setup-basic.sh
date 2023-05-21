@@ -22,7 +22,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDebian11SetupBasic_printVersion) == function ]] || GplDebian11SetupBasic_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplDebian11SetupBasic_printHelp) == function ]] || GplDebian11SetupBasic_printHelp() {
     cat << EOF
@@ -172,10 +172,6 @@ EOF
         ;;
     *) error OS "$ID" not supported; x;
 esac
-if [ ! -f /usr/share/zoneinfo/$timezone ];then
-    error Timezone is not valid;
-    timezone=
-fi
 until [[ -n "$timezone" ]];do
     read -p "Argument --timezone required: " timezone
     if [ ! -f /usr/share/zoneinfo/$timezone ];then
