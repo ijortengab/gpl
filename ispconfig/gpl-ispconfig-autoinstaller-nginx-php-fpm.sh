@@ -27,14 +27,14 @@ set -- "${_new_arguments[@]}"
 unset _new_arguments
 
 # Functions.
-[[ $(type -t GplIspconfigAutoinstaller_printVersion) == function ]] || GplIspconfigAutoinstaller_printVersion() {
-    echo '0.1.0'
+[[ $(type -t GplIspconfigAutoinstallerNginxPhpFpm_printVersion) == function ]] || GplIspconfigAutoinstallerNginxPhpFpm_printVersion() {
+    echo '0.1.1'
 }
-[[ $(type -t GplIspconfigAutoinstaller_printHelp) == function ]] || GplIspconfigAutoinstaller_printHelp() {
+[[ $(type -t GplIspconfigAutoinstallerNginxPhpFpm_printHelp) == function ]] || GplIspconfigAutoinstallerNginxPhpFpm_printHelp() {
     cat << EOF
 GPL ISPConfig Auto-Installer
 Variation Nginx PHP-FPM
-Version `GplIspconfigAutoinstaller_printVersion`
+Version `GplIspconfigAutoinstallerNginxPhpFpm_printVersion`
 
 EOF
     cat << 'EOF'
@@ -77,8 +77,8 @@ EOF
 }
 
 # Help and Version.
-[ -n "$help" ] && { GplIspconfigAutoinstaller_printHelp; exit 1; }
-[ -n "$version" ] && { GplIspconfigAutoinstaller_printVersion; exit 1; }
+[ -n "$help" ] && { GplIspconfigAutoinstallerNginxPhpFpm_printHelp; exit 1; }
+[ -n "$version" ] && { GplIspconfigAutoinstallerNginxPhpFpm_printVersion; exit 1; }
 
 # Requirement.
 command -v "mysql" >/dev/null || { echo -e "\e[91m" "Unable to proceed, mysql command not found." "\e[39m"; exit 1; }
@@ -238,7 +238,7 @@ EOF
 # Title.
 title GPL ISPConfig Auto-Installer
 _ 'Variation '; yellow Nginx PHP-FPM; _.
-_ 'Version '; yellow `GplIspconfigAutoinstaller_printVersion`; _.
+_ 'Version '; yellow `GplIspconfigAutoinstallerNginxPhpFpm_printVersion`; _.
 ____
 
 # Requirement, validate, and populate value.

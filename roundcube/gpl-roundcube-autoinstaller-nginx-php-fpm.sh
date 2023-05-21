@@ -23,14 +23,14 @@ set -- "${_new_arguments[@]}"
 unset _new_arguments
 
 # Functions.
-[[ $(type -t GplRoundcubeAutoinstaller_printVersion) == function ]] || GplRoundcubeAutoinstaller_printVersion() {
-    echo '0.1.0'
+[[ $(type -t GplRoundcubeAutoinstallerNginxPhpFpm_printVersion) == function ]] || GplRoundcubeAutoinstallerNginxPhpFpm_printVersion() {
+    echo '0.1.1'
 }
-[[ $(type -t GplRoundcubeAutoinstaller_printHelp) == function ]] || GplRoundcubeAutoinstaller_printHelp() {
+[[ $(type -t GplRoundcubeAutoinstallerNginxPhpFpm_printHelp) == function ]] || GplRoundcubeAutoinstallerNginxPhpFpm_printHelp() {
     cat << EOF
 GPL RoundCube Auto-Installer
 Variation Nginx PHP-FPM
-Version `GplRoundcubeAutoinstaller_printVersion`
+Version `GplRoundcubeAutoinstallerNginxPhpFpm_printVersion`
 
 EOF
     cat << 'EOF'
@@ -67,8 +67,8 @@ EOF
 }
 
 # Help and Version.
-[ -n "$help" ] && { GplRoundcubeAutoinstaller_printHelp; exit 1; }
-[ -n "$version" ] && { GplRoundcubeAutoinstaller_printVersion; exit 1; }
+[ -n "$help" ] && { GplRoundcubeAutoinstallerNginxPhpFpm_printHelp; exit 1; }
+[ -n "$version" ] && { GplRoundcubeAutoinstallerNginxPhpFpm_printVersion; exit 1; }
 
 # Requirement.
 command -v "mysql" >/dev/null || { echo -e "\e[91m" "Unable to proceed, mysql command not found." "\e[39m"; exit 1; }
@@ -145,7 +145,7 @@ EOF
 # Title.
 title GPL RoundCube Auto-Installer
 _ 'Variation '; yellow Nginx PHP-FPM; _.
-_ 'Version '; yellow `GplRoundcubeAutoinstaller_printVersion`; _.
+_ 'Version '; yellow `GplRoundcubeAutoinstallerNginxPhpFpm_printVersion`; _.
 ____
 
 # Requirement, validate, and populate value.

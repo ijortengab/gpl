@@ -23,14 +23,14 @@ set -- "${_new_arguments[@]}"
 unset _new_arguments
 
 # Functions.
-[[ $(type -t GplPhpmyadminAutoinstaller_printVersion) == function ]] || GplPhpmyadminAutoinstaller_printVersion() {
-    echo '0.1.0'
+[[ $(type -t GplPhpmyadminAutoinstallerNginxPhpFpm_printVersion) == function ]] || GplPhpmyadminAutoinstallerNginxPhpFpm_printVersion() {
+    echo '0.1.1'
 }
-[[ $(type -t GplPhpmyadminAutoinstaller_printHelp) == function ]] || GplPhpmyadminAutoinstaller_printHelp() {
+[[ $(type -t GplPhpmyadminAutoinstallerNginxPhpFpm_printHelp) == function ]] || GplPhpmyadminAutoinstallerNginxPhpFpm_printHelp() {
     cat << EOF
 GPL PHPMyAdmin Auto-Installer
 Variation Nginx PHP-FPM
-Version `GplPhpmyadminAutoinstaller_printVersion`
+Version `GplPhpmyadminAutoinstallerNginxPhpFpm_printVersion`
 
 EOF
     cat << 'EOF'
@@ -67,8 +67,8 @@ EOF
 }
 
 # Help and Version.
-[ -n "$help" ] && { GplPhpmyadminAutoinstaller_printHelp; exit 1; }
-[ -n "$version" ] && { GplPhpmyadminAutoinstaller_printVersion; exit 1; }
+[ -n "$help" ] && { GplPhpmyadminAutoinstallerNginxPhpFpm_printHelp; exit 1; }
+[ -n "$version" ] && { GplPhpmyadminAutoinstallerNginxPhpFpm_printVersion; exit 1; }
 
 # Requirement.
 command -v "mysql" >/dev/null || { echo -e "\e[91m" "Unable to proceed, mysql command not found." "\e[39m"; exit 1; }
@@ -145,7 +145,7 @@ EOF
 # Title.
 title GPL PHPMyAdmin Auto-Installer
 _ 'Variation '; yellow Nginx PHP-FPM; _.
-_ 'Version '; yellow `GplPhpmyadminAutoinstaller_printVersion`; _.
+_ 'Version '; yellow `GplPhpmyadminAutoinstallerNginxPhpFpm_printVersion`; _.
 ____
 
 # Requirement, validate, and populate value.
