@@ -22,7 +22,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplPhpSetupIspconfig_printVersion) == function ]] || GplPhpSetupIspconfig_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplPhpSetupIspconfig_printHelp) == function ]] || GplPhpSetupIspconfig_printHelp() {
     cat << EOF
@@ -159,13 +159,9 @@ if [ -z "$root_sure" ];then
     ____
 fi
 
-if [ -z "$php_version" ];then
-    downloadApplication php
-    validateApplication php
-else
-    downloadApplication php"$php_version"-{common,gd,mysql,imap,cli,fpm,curl,intl,pspell,sqlite3,tidy,xmlrpc,xsl,zip,mbstring,soap,opcache}
-    validateApplication php"$php_version"-{common,gd,mysql,imap,cli,fpm,curl,intl,pspell,sqlite3,tidy,xmlrpc,xsl,zip,mbstring,soap,opcache}
-fi
+chapter Instalasi PHP Extension.
+downloadApplication php"$php_version"-{common,gd,mysql,imap,cli,fpm,curl,intl,pspell,sqlite3,tidy,xmlrpc,xsl,zip,mbstring,soap,opcache}
+validateApplication php"$php_version"-{common,gd,mysql,imap,cli,fpm,curl,intl,pspell,sqlite3,tidy,xmlrpc,xsl,zip,mbstring,soap,opcache}
 ____
 
 # parse-options.sh \
