@@ -28,7 +28,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplNginxSetupPhpFpm_printVersion) == function ]] || GplNginxSetupPhpFpm_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplNginxSetupPhpFpm_printHelp) == function ]] || GplNginxSetupPhpFpm_printHelp() {
     cat << EOF
@@ -40,7 +40,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-nginx-setup-php-fpm.sh [options]
 
-Options.
+Options:
    --filename
         Set the filename to created inside /etc/nginx/sites-available directory.
    --root
@@ -50,7 +50,7 @@ Options.
    --server-name
         Set the value of server_name directive. Multivalue.
 
-Global Options.
+Global Options:
    --fast
         No delay every subtask.
    --version
@@ -59,6 +59,9 @@ Global Options.
         Show this help.
    --root-sure
         Bypass root checking.
+
+Dependency:
+   nginx
 EOF
 }
 
@@ -66,7 +69,10 @@ EOF
 [ -n "$help" ] && { GplNginxSetupPhpFpm_printHelp; exit 1; }
 [ -n "$version" ] && { GplNginxSetupPhpFpm_printVersion; exit 1; }
 
-# Requirement.
+# Dependency.
+while IFS= read -r line; do
+    command -v "${line}" >/dev/null || { echo -e "\e[91m""Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
+done <<< `GplNginxSetupPhpFpm_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' | sed 's/^ *//g'`
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }
@@ -149,9 +155,9 @@ fi
 
 file_config="/etc/nginx/sites-available/$filename"
 create_new=
-chapter Memeriksa file konfigurasi $file_config.
+chapter Memeriksa file konfigurasi.
 if [ -f "$file_config" ];then
-    __ File ditemukan.
+    __ File ditemukan: '`'$file_config'`'.
     string="unix:/run/php/php${php_version}-fpm.sock"
     string_quoted=$(sed "s/\./\\\./g" <<< "$string")
     if grep -q -E "^\s*fastcgi_pass\s+.*$string_quoted.*;\s*$" "$file_config";then
@@ -178,6 +184,7 @@ if [ -f "$file_config" ];then
         fi
     done
 else
+    __ File tidak ditemukan: '`'$file_config'`'.
     create_new=1
 fi
 ____

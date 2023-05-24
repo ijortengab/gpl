@@ -20,7 +20,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplPostfixSetupIspconfig_printVersion) == function ]] || GplPostfixSetupIspconfig_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplPostfixSetupIspconfig_printHelp) == function ]] || GplPostfixSetupIspconfig_printHelp() {
     cat << EOF
@@ -32,7 +32,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-postfix-setup-ispconfig.sh [options]
 
-Global Options.
+Global Options:
    --fast
         No delay every subtask.
    --version
@@ -41,10 +41,13 @@ Global Options.
         Show this help.
    --root-sure
         Bypass root checking.
-        
-Environment Variables.
+
+Environment Variables:
    POSTFIX_CONFIG_FILE
         Default to /etc/postfix/master.cf
+
+Dependency:
+   systemctl
 EOF
 }
 
@@ -52,8 +55,10 @@ EOF
 [ -n "$help" ] && { GplPostfixSetupIspconfig_printHelp; exit 1; }
 [ -n "$version" ] && { GplPostfixSetupIspconfig_printVersion; exit 1; }
 
-# Requirement.
-command -v "systemctl" >/dev/null || { echo -e "\e[91m" "Unable to proceed, systemctl command not found." "\e[39m"; exit 1; }
+# Dependency.
+while IFS= read -r line; do
+    command -v "${line}" >/dev/null || { echo -e "\e[91m""Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
+done <<< `GplPostfixSetupIspconfig_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' | sed 's/^ *//g'`
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }

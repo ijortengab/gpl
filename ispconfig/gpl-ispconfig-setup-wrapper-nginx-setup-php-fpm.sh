@@ -28,7 +28,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplIspconfigSetupWrapperNginxSetupPhpFpm_printVersion) == function ]] || GplIspconfigSetupWrapperNginxSetupPhpFpm_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplIspconfigSetupWrapperNginxSetupPhpFpm_printHelp) == function ]] || GplIspconfigSetupWrapperNginxSetupPhpFpm_printHelp() {
     cat << EOF
@@ -40,7 +40,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-ispconfig-setup-wrapper-nginx-setup-php-fpm.sh [options]
 
-Options.
+Options:
    --subdomain
         Set the subdomain if any.
    --domain
@@ -50,7 +50,7 @@ Options.
    --php-version
         Set the version of PHP FPM.
 
-Global Options.
+Global Options:
    --fast
         No delay every subtask.
    --version
@@ -59,6 +59,11 @@ Global Options.
         Show this help.
    --root-sure
         Bypass root checking.
+
+Dependency:
+   gpl-nginx-setup-php-fpm.sh
+   ispconfig.sh
+   curl
 EOF
 }
 
@@ -66,10 +71,10 @@ EOF
 [ -n "$help" ] && { GplIspconfigSetupWrapperNginxSetupPhpFpm_printHelp; exit 1; }
 [ -n "$version" ] && { GplIspconfigSetupWrapperNginxSetupPhpFpm_printVersion; exit 1; }
 
-# Requirement.
-command -v "gpl-nginx-setup-php-fpm.sh" >/dev/null || { echo -e "\e[91m" "Unable to proceed, gpl-nginx-setup-php-fpm.sh command not found." "\e[39m"; exit 1; }
-command -v "ispconfig.sh" >/dev/null || { echo -e "\e[91m" "Unable to proceed, ispconfig.sh command not found." "\e[39m"; exit 1; }
-command -v "curl" >/dev/null || { echo -e "\e[91m" "Unable to proceed, curl command not found." "\e[39m"; exit 1; }
+# Dependency.
+while IFS= read -r line; do
+    command -v "${line}" >/dev/null || { echo -e "\e[91m""Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
+done <<< `GplIspconfigSetupWrapperNginxSetupPhpFpm_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' | sed 's/^ *//g'`
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }

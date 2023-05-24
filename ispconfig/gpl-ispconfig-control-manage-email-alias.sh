@@ -29,7 +29,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplIspconfigControlManageEmailAlias_printVersion) == function ]] || GplIspconfigControlManageEmailAlias_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplIspconfigControlManageEmailAlias_printHelp) == function ]] || GplIspconfigControlManageEmailAlias_printHelp() {
     cat << EOF
@@ -41,7 +41,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-ispconfig-control-manage-email-alias.sh [options]
 
-Options.
+Options:
    --name
         The name of email alias.
    --domain
@@ -53,7 +53,7 @@ Options.
    --ispconfig-domain-exists-sure
         Bypass domain exists checking.
 
-Global Options.
+Global Options:
    --fast
         No delay every subtask.
    --version
@@ -63,13 +63,18 @@ Global Options.
    --root-sure
         Bypass root checking.
 
-Environment Variables.
+Environment Variables:
    ISPCONFIG_DB_USER_HOST
         Default to localhost
    ROUNDCUBE_DB_NAME
         Default to roundcubemail
    ROUNDCUBE_DB_USER_HOST
         Default to localhost
+
+Dependency:
+   ispconfig.sh
+   php
+   mysql
 EOF
 }
 
@@ -77,10 +82,10 @@ EOF
 [ -n "$help" ] && { GplIspconfigControlManageEmailAlias_printHelp; exit 1; }
 [ -n "$version" ] && { GplIspconfigControlManageEmailAlias_printVersion; exit 1; }
 
-# Requirement.
-command -v "ispconfig.sh" >/dev/null || { echo -e "\e[91m" "Unable to proceed, ispconfig.sh command not found." "\e[39m"; exit 1; }
-command -v "php" >/dev/null || { echo -e "\e[91m" "Unable to proceed, php command not found." "\e[39m"; exit 1; }
-command -v "mysql" >/dev/null || { echo -e "\e[91m" "Unable to proceed, mysql command not found." "\e[39m"; exit 1; }
+# Dependency.
+while IFS= read -r line; do
+    command -v "${line}" >/dev/null || { echo -e "\e[91m""Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
+done <<< `GplIspconfigControlManageEmailAlias_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' | sed 's/^ *//g'`
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }

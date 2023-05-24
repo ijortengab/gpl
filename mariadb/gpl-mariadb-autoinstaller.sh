@@ -20,7 +20,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplMariadbAutoinstaller_printVersion) == function ]] || GplMariadbAutoinstaller_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplMariadbAutoinstaller_printHelp) == function ]] || GplMariadbAutoinstaller_printHelp() {
     cat << EOF
@@ -32,7 +32,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-mariadb-autoinstaller.sh [options]
 
-Global Options.
+Global Options:
    --fast
         No delay every subtask.
    --version
@@ -48,7 +48,10 @@ EOF
 [ -n "$help" ] && { GplMariadbAutoinstaller_printHelp; exit 1; }
 [ -n "$version" ] && { GplMariadbAutoinstaller_printVersion; exit 1; }
 
-# Requirement.
+# Dependency.
+while IFS= read -r line; do
+    command -v "${line}" >/dev/null || { echo -e "\e[91m""Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
+done <<< `GplMariadbAutoinstaller_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' | sed 's/^ *//g'`
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }

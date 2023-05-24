@@ -24,7 +24,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplPhpmyadminAutoinstallerNginxPhpFpm_printVersion) == function ]] || GplPhpmyadminAutoinstallerNginxPhpFpm_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplPhpmyadminAutoinstallerNginxPhpFpm_printHelp) == function ]] || GplPhpmyadminAutoinstallerNginxPhpFpm_printHelp() {
     cat << EOF
@@ -36,13 +36,13 @@ EOF
     cat << 'EOF'
 Usage: gpl-phpmyadmin-autoinstaller-nginx-php-fpm.sh [options]
 
-Options.
+Options:
    --php-version
         Set the version of PHP FPM.
    --phpmyadmin-version
         Set the version of PHPMyAdmin.
 
-Global Options.
+Global Options:
    --fast
         No delay every subtask.
    --version
@@ -52,7 +52,7 @@ Global Options.
    --root-sure
         Bypass root checking.
 
-Environment Variables.
+Environment Variables:
    PHPMYADMIN_FQDN_LOCALHOST
         Default to phpmyadmin.localhost
    PHPMYADMIN_DB_NAME
@@ -63,6 +63,13 @@ Environment Variables.
         Default to localhost
    PHPMYADMIN_NGINX_CONFIG_FILE
         Default to phpmyadmin
+
+Dependency:
+   mysql
+   pwgen
+   php
+   curl
+   gpl-nginx-setup-php-fpm.sh
 EOF
 }
 
@@ -70,12 +77,10 @@ EOF
 [ -n "$help" ] && { GplPhpmyadminAutoinstallerNginxPhpFpm_printHelp; exit 1; }
 [ -n "$version" ] && { GplPhpmyadminAutoinstallerNginxPhpFpm_printVersion; exit 1; }
 
-# Requirement.
-command -v "mysql" >/dev/null || { echo -e "\e[91m" "Unable to proceed, mysql command not found." "\e[39m"; exit 1; }
-command -v "pwgen" >/dev/null || { echo -e "\e[91m" "Unable to proceed, pwgen command not found." "\e[39m"; exit 1; }
-command -v "php" >/dev/null || { echo -e "\e[91m" "Unable to proceed, php command not found." "\e[39m"; exit 1; }
-command -v "curl" >/dev/null || { echo -e "\e[91m" "Unable to proceed, curl command not found." "\e[39m"; exit 1; }
-command -v "gpl-nginx-setup-php-fpm.sh" >/dev/null || { echo -e "\e[91m" "Unable to proceed, gpl-nginx-setup-php-fpm.sh command not found." "\e[39m"; exit 1; }
+# Dependency.
+while IFS= read -r line; do
+    command -v "${line}" >/dev/null || { echo -e "\e[91m""Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
+done <<< `GplPhpmyadminAutoinstallerNginxPhpFpm_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' | sed 's/^ *//g'`
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }

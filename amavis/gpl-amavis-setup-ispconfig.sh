@@ -20,7 +20,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplAmavisSetupIspconfig_printVersion) == function ]] || GplAmavisSetupIspconfig_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplAmavisSetupIspconfig_printHelp) == function ]] || GplAmavisSetupIspconfig_printHelp() {
     cat << EOF
@@ -35,7 +35,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-amavis-setup-ispconfig.sh [options]
 
-Global Options.
+Global Options:
    --fast
         No delay every subtask.
    --version
@@ -44,6 +44,10 @@ Global Options.
         Show this help.
    --root-sure
         Bypass root checking.
+
+Dependency:
+   systemctl
+   netstat
 EOF
 }
 
@@ -51,9 +55,10 @@ EOF
 [ -n "$help" ] && { GplAmavisSetupIspconfig_printHelp; exit 1; }
 [ -n "$version" ] && { GplAmavisSetupIspconfig_printVersion; exit 1; }
 
-# Requirement.
-command -v "systemctl" >/dev/null || { echo -e "\e[91m" "Unable to proceed, systemctl command not found." "\e[39m"; exit 1; }
-command -v "netstat" >/dev/null || { echo -e "\e[91m" "Unable to proceed, netstat command not found." "\e[39m"; exit 1; }
+# Dependency.
+while IFS= read -r line; do
+    command -v "${line}" >/dev/null || { echo -e "\e[91m""Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
+done <<< `GplAmavisSetupIspconfig_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' | sed 's/^ *//g'`
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }

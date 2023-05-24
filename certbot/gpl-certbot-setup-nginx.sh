@@ -32,7 +32,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplCertbotSetupNginx_printVersion) == function ]] || GplCertbotSetupNginx_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplCertbotSetupNginx_printHelp) == function ]] || GplCertbotSetupNginx_printHelp() {
     cat << EOF
@@ -46,7 +46,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-certbot-setup-nginx.sh [options]
 
-Options.
+Options:
    --domain
         Main domain to obtain certificate.
    --email
@@ -56,7 +56,7 @@ Options.
    --
         Every arguments after double dash will pass to certbot command.
         Example: gpl-certbot-setup-nginx.sh -- -d domain2.com
-Global Options.
+Global Options:
    --fast
         No delay every subtask.
    --version
@@ -65,6 +65,9 @@ Global Options.
         Show this help.
    --root-sure
         Bypass root checking.
+
+Dependency:
+   certbot
 EOF
 }
 
@@ -72,8 +75,10 @@ EOF
 [ -n "$help" ] && { GplCertbotSetupNginx_printHelp; exit 1; }
 [ -n "$version" ] && { GplCertbotSetupNginx_printVersion; exit 1; }
 
-# Requirement.
-command -v "certbot" >/dev/null || { echo -e "\e[91m" "Unable to proceed, certbot command not found." "\e[39m"; exit 1; }
+# Dependency.
+while IFS= read -r line; do
+    command -v "${line}" >/dev/null || { echo -e "\e[91m""Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
+done <<< `GplCertbotSetupNginx_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' | sed 's/^ *//g'`
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }

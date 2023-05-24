@@ -20,7 +20,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplRoundcubeSetupIspconfigIntegration_printVersion) == function ]] || GplRoundcubeSetupIspconfigIntegration_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplRoundcubeSetupIspconfigIntegration_printHelp) == function ]] || GplRoundcubeSetupIspconfigIntegration_printHelp() {
     cat << EOF
@@ -32,7 +32,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-roundcube-setup-ispconfig-integration.sh [options]
 
-Global Options.
+Global Options:
    --fast
         No delay every subtask.
    --version
@@ -42,7 +42,7 @@ Global Options.
    --root-sure
         Bypass root checking.
 
-Environment Variables.
+Environment Variables:
    ISPCONFIG_REMOTE_USER_ROUNDCUBE
         Default to roundcube
    ISPCONFIG_INSTALL_DIR
@@ -51,6 +51,13 @@ Environment Variables.
         Default to localhost
    ISPCONFIG_FQDN_LOCALHOST
         Default to ispconfig.localhost
+
+Dependency:
+   mysql
+   pwgen
+   php
+   unzip
+   ispconfig.sh
 EOF
 }
 
@@ -58,12 +65,10 @@ EOF
 [ -n "$help" ] && { GplRoundcubeSetupIspconfigIntegration_printHelp; exit 1; }
 [ -n "$version" ] && { GplRoundcubeSetupIspconfigIntegration_printVersion; exit 1; }
 
-# Requirement.
-command -v "mysql" >/dev/null || { echo -e "\e[91m" "Unable to proceed, mysql command not found." "\e[39m"; exit 1; }
-command -v "pwgen" >/dev/null || { echo -e "\e[91m" "Unable to proceed, pwgen command not found." "\e[39m"; exit 1; }
-command -v "php" >/dev/null || { echo -e "\e[91m" "Unable to proceed, php command not found." "\e[39m"; exit 1; }
-command -v "unzip" >/dev/null || { echo -e "\e[91m" "Unable to proceed, unzip command not found." "\e[39m"; exit 1; }
-command -v "ispconfig.sh" >/dev/null || { echo -e "\e[91m" "Unable to proceed, ispconfig.sh command not found." "\e[39m"; exit 1; }
+# Dependency.
+while IFS= read -r line; do
+    command -v "${line}" >/dev/null || { echo -e "\e[91m""Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
+done <<< `GplRoundcubeSetupIspconfigIntegration_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' | sed 's/^ *//g'`
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }

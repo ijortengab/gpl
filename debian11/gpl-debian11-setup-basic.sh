@@ -22,7 +22,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDebian11SetupBasic_printVersion) == function ]] || GplDebian11SetupBasic_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplDebian11SetupBasic_printHelp) == function ]] || GplDebian11SetupBasic_printHelp() {
     cat << EOF
@@ -34,11 +34,11 @@ EOF
     cat << 'EOF'
 Usage: gpl-debian11-setup-basic.sh [options]
 
-Options.
+Options:
    --timezone
         Set the timezone of this machine.
 
-Global Options.
+Global Options:
    --fast
         No delay every subtask.
    --version
@@ -54,7 +54,10 @@ EOF
 [ -n "$help" ] && { GplDebian11SetupBasic_printHelp; exit 1; }
 [ -n "$version" ] && { GplDebian11SetupBasic_printVersion; exit 1; }
 
-# Requirement.
+# Dependency.
+while IFS= read -r line; do
+    command -v "${line}" >/dev/null || { echo -e "\e[91m""Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
+done <<< `GplDebian11SetupBasic_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' | sed 's/^ *//g'`
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }

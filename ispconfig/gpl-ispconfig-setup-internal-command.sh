@@ -26,7 +26,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplIspconfigSetupInternalCommand_printVersion) == function ]] || GplIspconfigSetupInternalCommand_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplIspconfigSetupInternalCommand_printHelp) == function ]] || GplIspconfigSetupInternalCommand_printHelp() {
     cat << EOF
@@ -38,7 +38,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-ispconfig-setup-internal-command.sh [options]
 
-Options.
+Options:
    --phpmyadmin-version
         Set the version of PHPMyAdmin
    --roundcube-version
@@ -46,7 +46,7 @@ Options.
    --ispconfig-version
         Set the version of ISPConfig.
 
-Global Options.
+Global Options:
    --fast
         No delay every subtask.
    --version
@@ -56,7 +56,7 @@ Global Options.
    --root-sure
         Bypass root checking.
 
-Environment Variables.
+Environment Variables:
    ISPCONFIG_INSTALL_DIR
         Default to /usr/local/ispconfig
    ISPCONFIG_DB_USER_HOST
@@ -65,6 +65,11 @@ Environment Variables.
         Default to root
    ISPCONFIG_FQDN_LOCALHOST
         Default to ispconfig.localhost
+
+Dependency:
+   mysql
+   pwgen
+   php
 EOF
 }
 
@@ -72,10 +77,10 @@ EOF
 [ -n "$help" ] && { GplIspconfigSetupInternalCommand_printHelp; exit 1; }
 [ -n "$version" ] && { GplIspconfigSetupInternalCommand_printVersion; exit 1; }
 
-# Requirement.
-command -v "mysql" >/dev/null || { echo -e "\e[91m" "Unable to proceed, mysql command not found." "\e[39m"; exit 1; }
-command -v "pwgen" >/dev/null || { echo -e "\e[91m" "Unable to proceed, pwgen command not found." "\e[39m"; exit 1; }
-command -v "php" >/dev/null || { echo -e "\e[91m" "Unable to proceed, php command not found." "\e[39m"; exit 1; }
+# Dependency.
+while IFS= read -r line; do
+    command -v "${line}" >/dev/null || { echo -e "\e[91m""Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
+done <<< `GplIspconfigSetupInternalCommand_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' | sed 's/^ *//g'`
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }

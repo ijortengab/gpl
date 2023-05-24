@@ -22,7 +22,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplIspconfigSetupDumpVariables_printVersion) == function ]] || GplIspconfigSetupDumpVariables_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplIspconfigSetupDumpVariables_printHelp) == function ]] || GplIspconfigSetupDumpVariables_printHelp() {
     cat << EOF
@@ -34,11 +34,11 @@ EOF
     cat << 'EOF'
 Usage: gpl-ispconfig-setup-dump-variables.sh [options]
 
-Options.
+Options:
    --domain
         Set the domain to setup.
 
-Global Options.
+Global Options:
    --fast
         No delay every subtask.
    --version
@@ -48,7 +48,7 @@ Global Options.
    --root-sure
         Bypass root checking.
 
-Environment Variables.
+Environment Variables:
    SUBDOMAIN_ISPCONFIG
         Default to cp
    SUBDOMAIN_PHPMYADMIN
@@ -72,7 +72,10 @@ EOF
 [ -n "$help" ] && { GplIspconfigSetupDumpVariables_printHelp; exit 1; }
 [ -n "$version" ] && { GplIspconfigSetupDumpVariables_printVersion; exit 1; }
 
-# Requirement.
+# Dependency.
+while IFS= read -r line; do
+    command -v "${line}" >/dev/null || { echo -e "\e[91m""Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
+done <<< `GplIspconfigSetupDumpVariables_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' | sed 's/^ *//g'`
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }

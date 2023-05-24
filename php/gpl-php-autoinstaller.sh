@@ -22,7 +22,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplPhpAutoinstaller_printVersion) == function ]] || GplPhpAutoinstaller_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplPhpAutoinstaller_printHelp) == function ]] || GplPhpAutoinstaller_printHelp() {
     cat << EOF
@@ -34,11 +34,11 @@ EOF
     cat << 'EOF'
 Usage: gpl-php-autoinstaller.sh [options]
 
-Options.
+Options:
    --php-version
         Set version of PHP.
 
-Global Options.
+Global Options:
    --fast
         No delay every subtask.
    --version
@@ -47,6 +47,10 @@ Global Options.
         Show this help.
    --root-sure
         Bypass root checking.
+
+Dependency:
+   lsb_release
+   curl
 EOF
 }
 
@@ -54,9 +58,10 @@ EOF
 [ -n "$help" ] && { GplPhpAutoinstaller_printHelp; exit 1; }
 [ -n "$version" ] && { GplPhpAutoinstaller_printVersion; exit 1; }
 
-# Requirement.
-command -v "lsb_release" >/dev/null || { echo -e "\e[91m" "Unable to proceed, lsb_release command not found." "\e[39m"; exit 1; }
-command -v "curl" >/dev/null || { echo -e "\e[91m" "Unable to proceed, curl command not found." "\e[39m"; exit 1; }
+# Dependency.
+while IFS= read -r line; do
+    command -v "${line}" >/dev/null || { echo -e "\e[91m""Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
+done <<< `GplPhpAutoinstaller_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' | sed 's/^ *//g'`
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }

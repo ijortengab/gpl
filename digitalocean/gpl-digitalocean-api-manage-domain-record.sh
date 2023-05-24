@@ -46,7 +46,7 @@ fi
 
 # Functions.
 [[ $(type -t GplDigitaloceanApiManageDomainRecord_printVersion) == function ]] || GplDigitaloceanApiManageDomainRecord_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplDigitaloceanApiManageDomainRecord_printHelp) == function ]] || GplDigitaloceanApiManageDomainRecord_printHelp() {
     cat << EOF
@@ -60,7 +60,7 @@ Usage: gpl-digitalocean-api-manage-domain-record.sh [command] [options]
 
 Available commands: add, delete.
 
-Options.
+Options:
    --domain
         Set the domain to add or delete.
    --type
@@ -80,7 +80,7 @@ Options.
    --digitalocean-domain-exists-sure
         Bypass domain exists checking.
 
-Global Options.
+Global Options:
    --fast
         No delay every subtask.
    --version
@@ -89,6 +89,10 @@ Global Options.
         Show this help.
    --root-sure
         Bypass root checking.
+
+Dependency:
+   php
+   curl
 EOF
 }
 
@@ -96,9 +100,10 @@ EOF
 [ -n "$help" ] && { GplDigitaloceanApiManageDomainRecord_printHelp; exit 1; }
 [ -n "$version" ] && { GplDigitaloceanApiManageDomainRecord_printVersion; exit 1; }
 
-# Requirement.
-command -v "php" >/dev/null || { echo -e "\e[91m" "Unable to proceed, php command not found." "\e[39m"; exit 1; }
-command -v "curl" >/dev/null || { echo -e "\e[91m" "Unable to proceed, curl command not found." "\e[39m"; exit 1; }
+# Dependency.
+while IFS= read -r line; do
+    command -v "${line}" >/dev/null || { echo -e "\e[91m""Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
+done <<< `GplDigitaloceanApiManageDomainRecord_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' | sed 's/^ *//g'`
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }

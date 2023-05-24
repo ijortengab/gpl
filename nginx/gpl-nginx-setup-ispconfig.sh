@@ -20,7 +20,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplNginxSetupIspconfig_printVersion) == function ]] || GplNginxSetupIspconfig_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplNginxSetupIspconfig_printHelp) == function ]] || GplNginxSetupIspconfig_printHelp() {
     cat << EOF
@@ -32,7 +32,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-nginx-setup-ispconfig.sh [options]
 
-Global Options.
+Global Options:
    --fast
         No delay every subtask.
    --version
@@ -41,6 +41,9 @@ Global Options.
         Show this help.
    --root-sure
         Bypass root checking.
+
+Dependency:
+   systemctl
 EOF
 }
 
@@ -48,8 +51,10 @@ EOF
 [ -n "$help" ] && { GplNginxSetupIspconfig_printHelp; exit 1; }
 [ -n "$version" ] && { GplNginxSetupIspconfig_printVersion; exit 1; }
 
-# Requirement.
-command -v "systemctl" >/dev/null || { echo -e "\e[91m" "Unable to proceed, systemctl command not found." "\e[39m"; exit 1; }
+# Dependency.
+while IFS= read -r line; do
+    command -v "${line}" >/dev/null || { echo -e "\e[91m""Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
+done <<< `GplNginxSetupIspconfig_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' | sed 's/^ *//g'`
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }

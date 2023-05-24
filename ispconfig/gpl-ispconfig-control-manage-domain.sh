@@ -31,7 +31,7 @@ fi
 
 # Functions.
 [[ $(type -t GplIspconfigControlManageDomain_printVersion) == function ]] || GplIspconfigControlManageDomain_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplIspconfigControlManageDomain_printHelp) == function ]] || GplIspconfigControlManageDomain_printHelp() {
     cat << EOF
@@ -45,11 +45,11 @@ Usage: gpl-ispconfig-control-manage-domain.sh [command] [options]
 
 Available commands: add, delete, isset, get_dns_record.
 
-Options.
+Options:
    --domain
         Set the domain to control.
 
-Global Options.
+Global Options:
    --fast
         No delay every subtask.
    --version
@@ -59,9 +59,13 @@ Global Options.
    --root-sure
         Bypass root checking.
 
-Environment Variables.
+Environment Variables:
    DKIM_SELECTOR
         Default to default.
+
+Dependency:
+   ispconfig.sh
+   php
 EOF
 }
 
@@ -69,9 +73,10 @@ EOF
 [ -n "$help" ] && { GplIspconfigControlManageDomain_printHelp; exit 1; }
 [ -n "$version" ] && { GplIspconfigControlManageDomain_printVersion; exit 1; }
 
-# Requirement.
-command -v "ispconfig.sh" >/dev/null || { echo -e "\e[91m" "Unable to proceed, ispconfig.sh command not found." "\e[39m"; exit 1; }
-command -v "php" >/dev/null || { echo -e "\e[91m" "Unable to proceed, php command not found." "\e[39m"; exit 1; }
+# Dependency.
+while IFS= read -r line; do
+    command -v "${line}" >/dev/null || { echo -e "\e[91m""Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
+done <<< `GplIspconfigControlManageDomain_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' | sed 's/^ *//g'`
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }

@@ -30,7 +30,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplIspconfigSetupVariation1_printVersion) == function ]] || GplIspconfigSetupVariation1_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplIspconfigSetupVariation1_printHelp) == function ]] || GplIspconfigSetupVariation1_printHelp() {
     cat << EOF
@@ -46,7 +46,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-ispconfig-setup-variation1.sh [options]
 
-Options.
+Options:
    --timezone
         Set the timezone of this machine.
    --hostname
@@ -58,7 +58,7 @@ Options.
   --non-interactive
         Skip confirmation of --ip-address=auto.
 
-Global Options.
+Global Options:
    --fast
         No delay every subtask.
    --version
@@ -66,7 +66,7 @@ Global Options.
    --help
         Show this help.
 
-Environment Variables.
+Environment Variables:
    SUBDOMAIN_ISPCONFIG
         Default to cp
    SUBDOMAIN_PHPMYADMIN
@@ -83,6 +83,35 @@ Environment Variables.
         Default to hostmaster
    MAILBOX_POST
         Default to postmaster
+
+Dependency:
+   wget
+   gpl-debian11-setup-basic.sh
+   gpl-mariadb-autoinstaller.sh
+   gpl-mariadb-setup-ispconfig.sh
+   gpl-nginx-autoinstaller.sh
+   gpl-nginx-setup-ispconfig.sh
+   gpl-php-autoinstaller.sh
+   gpl-php-setup-ispconfig.sh
+   gpl-postfix-autoinstaller.sh
+   gpl-postfix-setup-ispconfig.sh
+   gpl-phpmyadmin-autoinstaller-nginx-php-fpm.sh
+   gpl-roundcube-autoinstaller-nginx-php-fpm.sh
+   gpl-ispconfig-autoinstaller-nginx-php-fpm.sh
+   gpl-ispconfig-setup-internal-command.sh
+   gpl-roundcube-setup-ispconfig-integration.sh
+   gpl-amavis-setup-ispconfig.sh
+   gpl-ispconfig-setup-wrapper-nginx-setup-php-fpm.sh
+   gpl-ispconfig-control-manage-domain.sh
+   gpl-ispconfig-control-manage-email-mailbox.sh
+   gpl-ispconfig-control-manage-email-alias.sh
+   gpl-digitalocean-api-manage-domain.sh
+   gpl-digitalocean-api-manage-domain-record.sh
+   gpl-ispconfig-setup-wrapper-digitalocean.sh
+   gpl-certbot-autoinstaller.sh
+   gpl-certbot-digitalocean-autoinstaller.sh
+   gpl-ispconfig-setup-wrapper-certbot-setup-nginx.sh
+   gpl-ispconfig-setup-dump-variables.sh
 EOF
 }
 
@@ -90,40 +119,10 @@ EOF
 [ -n "$help" ] && { GplIspconfigSetupVariation1_printHelp; exit 1; }
 [ -n "$version" ] && { GplIspconfigSetupVariation1_printVersion; exit 1; }
 
-# Requirement.
-command -v "wget" >/dev/null || { echo -e "\e[91m" "Unable to proceed, wget command not found." "\e[39m"; exit 1; }
-commands_required=$(cat <<EOF
-gpl-debian11-setup-basic.sh
-gpl-mariadb-autoinstaller.sh
-gpl-mariadb-setup-ispconfig.sh
-gpl-nginx-autoinstaller.sh
-gpl-nginx-setup-ispconfig.sh
-gpl-php-autoinstaller.sh
-gpl-php-setup-ispconfig.sh
-gpl-postfix-autoinstaller.sh
-gpl-postfix-setup-ispconfig.sh
-gpl-phpmyadmin-autoinstaller-nginx-php-fpm.sh
-gpl-roundcube-autoinstaller-nginx-php-fpm.sh
-gpl-ispconfig-autoinstaller-nginx-php-fpm.sh
-gpl-ispconfig-setup-internal-command.sh
-gpl-roundcube-setup-ispconfig-integration.sh
-gpl-amavis-setup-ispconfig.sh
-gpl-ispconfig-setup-wrapper-nginx-setup-php-fpm.sh
-gpl-ispconfig-control-manage-domain.sh
-gpl-ispconfig-control-manage-email-mailbox.sh
-gpl-ispconfig-control-manage-email-alias.sh
-gpl-digitalocean-api-manage-domain.sh
-gpl-digitalocean-api-manage-domain-record.sh
-gpl-ispconfig-setup-wrapper-digitalocean.sh
-gpl-certbot-autoinstaller.sh
-gpl-certbot-digitalocean-autoinstaller.sh
-gpl-ispconfig-setup-wrapper-certbot-setup-nginx.sh
-gpl-ispconfig-setup-dump-variables.sh
-EOF
-)
+# Dependency.
 while IFS= read -r line; do
-    command -v "${line}" >/dev/null || { echo -e "\e[91m" "Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
-done <<< "$commands_required"
+    command -v "${line}" >/dev/null || { echo -e "\e[91m""Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
+done <<< `GplIspconfigSetupVariation1_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' | sed 's/^ *//g'`
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }
