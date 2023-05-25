@@ -31,14 +31,14 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalSetupVariation1_printVersion) == function ]] || GplDrupalSetupVariation1_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplDrupalSetupVariation1_printHelp) == function ]] || GplDrupalSetupVariation1_printHelp() {
     cat << EOF
 GPL Drupal Setup
 Variation Variation 1
 Version `GplDrupalSetupVariation1_printVersion`
-Debian 11, Drupal ^9|^10
+Debian 11, Drupal 10
 Nginx 1.18.0, MariaDB 10.5.19, PHP 8.2
 
 EOF
@@ -131,7 +131,7 @@ done <<< `GplDrupalSetupVariation1_printHelp | sed -n '/^Dependency:/,$p' | sed 
 title GPL Drupal Setup
 _ 'Variation '; yellow 1; _.
 _ 'Version '; yellow `GplDrupalSetupVariation1_printVersion`; _.
-e Debian 11, Drupal '^9|^10'
+e Debian 11, Drupal 10
 e Nginx 1.18.0, MariaDB 10.5.19, PHP 8.2
 ____
 
@@ -139,6 +139,8 @@ ____
 chapter Dump variable.
 php_version=8.2
 code php_version="$php_version"
+drupal_version=10
+code drupal_version="$drupal_version"
 until [[ -n "$project_name" ]];do
     read -p "Argument --project-name required: " project_name
 done
@@ -150,19 +152,6 @@ if [ -n "$project_parent_name" ];then
 fi
 code 'domain_strict="'$domain_strict'"'
 code 'domain="'$domain'"'
-case "$drupal_version" in
-    9|10) ;;
-    *) drupal_version=
-esac
-until [[ -n "$drupal_version" ]];do
-    _ Available value:' '; yellow 9, 10.; _.
-    read -p "Argument --drupal-version required: " drupal_version
-    case "$drupal_version" in
-        9|10) ;;
-        *) drupal_version=
-    esac
-done
-code 'drupal_version="'$drupal_version'"'
 delay=.5; [ -n "$fast" ] && unset delay
 ____
 
