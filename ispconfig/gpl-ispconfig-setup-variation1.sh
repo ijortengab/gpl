@@ -30,7 +30,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplIspconfigSetupVariation1_printVersion) == function ]] || GplIspconfigSetupVariation1_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplIspconfigSetupVariation1_printHelp) == function ]] || GplIspconfigSetupVariation1_printHelp() {
     cat << EOF
@@ -206,9 +206,6 @@ MAILBOX_HOST=${MAILBOX_HOST:=hostmaster}
 code 'MAILBOX_HOST="'$MAILBOX_HOST'"'
 MAILBOX_POST=${MAILBOX_POST:=postmaster}
 code 'MAILBOX_POST="'$MAILBOX_POST'"'
-until [[ -n "$timezone" ]];do
-    read -p "Argument --timezone required: " timezone
-done
 code 'timezone="'$timezone'"'
 until [[ -n "$domain" ]];do
     read -p "Argument --domain required: " domain

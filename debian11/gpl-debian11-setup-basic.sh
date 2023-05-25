@@ -22,7 +22,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDebian11SetupBasic_printVersion) == function ]] || GplDebian11SetupBasic_printVersion() {
-    echo '0.1.3'
+    echo '0.1.4'
 }
 [[ $(type -t GplDebian11SetupBasic_printHelp) == function ]] || GplDebian11SetupBasic_printHelp() {
     cat << EOF
@@ -170,14 +170,14 @@ EOF
         ;;
     *) error OS "$ID" not supported; x;
 esac
-until [[ -n "$timezone" ]];do
-    read -p "Argument --timezone required: " timezone
-    if [ ! -f /usr/share/zoneinfo/$timezone ];then
-        error Timezone is not valid;
-        timezone=
-    fi
-done
 code 'timezone="'$timezone'"'
+if [ -n "$timezone" ];then
+    if [ ! -f /usr/share/zoneinfo/$timezone ];then
+        __ Timezone is not valid.
+        timezone=
+        code 'timezone="'$timezone'"'
+    fi
+fi
 ____
 
 if [ -z "$root_sure" ];then
@@ -250,16 +250,18 @@ if [[ -n "$is_dash" ]];then
     ____
 fi
 
-chapter Mengecek timezone.
-current_timezone=$(realpath /etc/localtime | cut -d/ -f5,6)
 adjust=
-if [[ "$current_timezone" == "$timezone" ]];then
-    __ Timezone is match: ${current_timezone}
-else
-    __ Timezone is different: ${current_timezone}
-    adjust=1
+if [ -n "$timezone" ];then
+    chapter Mengecek timezone.
+    current_timezone=$(realpath /etc/localtime | cut -d/ -f5,6)
+    if [[ "$current_timezone" == "$timezone" ]];then
+        __ Timezone is match: ${current_timezone}
+    else
+        __ Timezone is different: ${current_timezone}
+        adjust=1
+    fi
+    ____
 fi
-____
 
 if [[ -n "$adjust" ]];then
     chapter Adjust timezone.
