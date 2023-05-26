@@ -22,7 +22,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplPhpSetupDrupal_printVersion) == function ]] || GplPhpSetupDrupal_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplPhpSetupDrupal_printHelp) == function ]] || GplPhpSetupDrupal_printHelp() {
     cat << EOF
@@ -47,20 +47,12 @@ Global Options.
         Show this help.
    --root-sure
         Bypass root checking.
-
-Dependency:
-   systemctl
 EOF
 }
 
 # Help and Version.
 [ -n "$help" ] && { GplPhpSetupDrupal_printHelp; exit 1; }
 [ -n "$version" ] && { GplPhpSetupDrupal_printVersion; exit 1; }
-
-# Dependency.
-while IFS= read -r line; do
-    command -v "${line}" >/dev/null || { echo -e "\e[91m""Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
-done <<< `GplPhpSetupDrupal_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' | sed 's/^ *//g'`
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }
@@ -152,6 +144,8 @@ ____
 
 # Require, validate, and populate value.
 chapter Dump variable.
+delay=.5; [ -n "$fast" ] && unset delay
+code 'php_version="'$php_version'"'
 ____
 
 if [ -z "$root_sure" ];then
