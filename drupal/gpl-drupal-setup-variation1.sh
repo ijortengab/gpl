@@ -12,8 +12,6 @@ while [[ $# -gt 0 ]]; do
         --domain=*) domain="${1#*=}"; shift ;;
         --domain) if [[ ! $2 == "" && ! $2 =~ ^-[^-] ]]; then domain="$2"; shift; fi; shift ;;
         --domain-strict) domain_strict=1; shift ;;
-        --drupal-version=*) drupal_version="${1#*=}"; shift ;;
-        --drupal-version) if [[ ! $2 == "" && ! $2 =~ ^-[^-] ]]; then drupal_version="$2"; shift; fi; shift ;;
         --fast) fast=1; shift ;;
         --project-name=*) project_name="${1#*=}"; shift ;;
         --project-name) if [[ ! $2 == "" && ! $2 =~ ^-[^-] ]]; then project_name="$2"; shift; fi; shift ;;
@@ -31,7 +29,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalSetupVariation1_printVersion) == function ]] || GplDrupalSetupVariation1_printVersion() {
-    echo '0.1.2'
+    echo '0.1.3'
 }
 [[ $(type -t GplDrupalSetupVariation1_printHelp) == function ]] || GplDrupalSetupVariation1_printHelp() {
     cat << EOF
@@ -48,8 +46,6 @@ Options.
         Set the project name. This should be in machine name format.
    --project-parent-name
         Set the project parent name. The parent is not have to installed before.
-   --drupal-version
-        Available value: 9, 10.
    --timezone
         Set the timezone of this machine.
    --domain
@@ -199,7 +195,6 @@ _;_, ____________________________________________________________________;_.;_.;
 # VALUE=(
 # --project-name
 # --project-parent-name
-# --drupal-version
 # --timezone
 # --domain
 # )
