@@ -31,15 +31,13 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalSetupVariation1_printVersion) == function ]] || GplDrupalSetupVariation1_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplDrupalSetupVariation1_printHelp) == function ]] || GplDrupalSetupVariation1_printHelp() {
     cat << EOF
 GPL Drupal Setup
-Variation Variation 1
+Variation 1. Debian 11, Drupal 10, PHP 8.2.
 Version `GplDrupalSetupVariation1_printVersion`
-Debian 11, Drupal 10
-Nginx 1.18.0, MariaDB 10.5.19, PHP 8.2
 
 EOF
     cat << 'EOF'
@@ -129,10 +127,8 @@ done <<< `GplDrupalSetupVariation1_printHelp | sed -n '/^Dependency:/,$p' | sed 
 
 # Title.
 title GPL Drupal Setup
-_ 'Variation '; yellow 1; _.
+_ 'Variation '; yellow 1; _, . Debian 11, Drupal 10, PHP 8.2. ; _.
 _ 'Version '; yellow `GplDrupalSetupVariation1_printVersion`; _.
-e Debian 11, Drupal 10
-e Nginx 1.18.0, MariaDB 10.5.19, PHP 8.2
 ____
 
 # Requirement, validate, and populate value.

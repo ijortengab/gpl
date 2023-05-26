@@ -30,17 +30,14 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplIspconfigSetupVariation1_printVersion) == function ]] || GplIspconfigSetupVariation1_printVersion() {
-    echo '0.1.2'
+    echo '0.1.3'
 }
 [[ $(type -t GplIspconfigSetupVariation1_printHelp) == function ]] || GplIspconfigSetupVariation1_printHelp() {
     cat << EOF
 GPL ISPConfig Setup
-Variation 1
+Variation 1. Debian 11, ISPConfig 3.2.7, PHPMyAdmin 5.2.0, Roundcube 1.6.0,
+PHP 7.4, DigitalOcean DNS.
 Version `GplIspconfigSetupVariation1_printVersion`
-Debian 11, ISPConfig 3.2.7
-PHPMyAdmin 5.2.0, Roundcube 1.6.0
-Nginx 1.18.0, MariaDB 10.5.19, PHP 7.4
-Postfix 3.5.18, Dovecot 2.3.13
 
 EOF
     cat << 'EOF'
@@ -180,12 +177,9 @@ done <<< `GplIspconfigSetupVariation1_printHelp | sed -n '/^Dependency:/,$p' | s
 
 # Title.
 title GPL ISPConfig Setup
-_ 'Variation '; yellow '1'; _.
+_ 'Variation '; yellow 1; _, . Debian 11, ISPConfig 3.2.7, PHPMyAdmin 5.2.0, Roundcube 1.6.0, ; _.
+e PHP 7.4, DigitalOcean DNS.
 _ 'Version '; yellow `GplIspconfigSetupVariation1_printVersion`; _.
-e Debian 11, ISPConfig 3.2.7
-e PHPMyAdmin 5.2.0, Roundcube 1.6.0
-e Nginx 1.18.0, MariaDB 10.5.19, PHP 7.4
-e Postfix 3.5.18, Dovecot 2.3.13
 ____
 
 # Require, validate, and populate value.
