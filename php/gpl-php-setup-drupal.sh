@@ -22,7 +22,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplPhpSetupDrupal_printVersion) == function ]] || GplPhpSetupDrupal_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplPhpSetupDrupal_printHelp) == function ]] || GplPhpSetupDrupal_printHelp() {
     cat << EOF
@@ -110,7 +110,7 @@ done <<< `GplPhpSetupDrupal_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/
         fi
     done
     if [ -n "$aptnotfound" ];then
-        __; red Gagal menginstall aplikasi:"$aptnotfound"; exit; _.
+        __; red Gagal menginstall aplikasi:"$aptnotfound"; x
     fi
 }
 [[ $(type -t addRepositoryPpaOndrejPhp) == function ]] || addRepositoryPpaOndrejPhp() {
@@ -138,7 +138,7 @@ done <<< `GplPhpSetupDrupal_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/
         if grep --no-filename -R -E "$string_quoted" | grep -q -v -E '^\s*#';then
             __; green Sudah terdapat di direktori '`'/etc/apt/sources.list.d'`'.; _.
         else
-            __; red Tidak terdapat di direktori '`'/etc/apt/sources.list.d'`'.;  exit; _.
+            __; red Tidak terdapat di direktori '`'/etc/apt/sources.list.d'`'.;  x
         fi
         ____
     fi

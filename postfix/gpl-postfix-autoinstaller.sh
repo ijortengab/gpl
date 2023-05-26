@@ -24,7 +24,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplPostfixAutoinstaller_printVersion) == function ]] || GplPostfixAutoinstaller_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplPostfixAutoinstaller_printHelp) == function ]] || GplPostfixAutoinstaller_printHelp() {
     cat << EOF
@@ -112,7 +112,7 @@ done <<< `GplPostfixAutoinstaller_printHelp | sed -n '/^Dependency:/,$p' | sed -
         fi
     done
     if [ -n "$aptnotfound" ];then
-        __; red Gagal menginstall aplikasi:"$aptnotfound"; exit; _.
+        __; red Gagal menginstall aplikasi:"$aptnotfound"; x
     fi
 }
 

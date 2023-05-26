@@ -20,7 +20,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplMariadbAutoinstaller_printVersion) == function ]] || GplMariadbAutoinstaller_printVersion() {
-    echo '0.1.2'
+    echo '0.1.3'
 }
 [[ $(type -t GplMariadbAutoinstaller_printHelp) == function ]] || GplMariadbAutoinstaller_printHelp() {
     cat << EOF
@@ -94,7 +94,7 @@ EOF
         fi
     done
     if [ -n "$aptnotfound" ];then
-        __; red Gagal menginstall aplikasi:"$aptnotfound"; exit; _.
+        __; red Gagal menginstall aplikasi:"$aptnotfound"; x
     fi
 }
 

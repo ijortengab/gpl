@@ -22,7 +22,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDebian11SetupBasic_printVersion) == function ]] || GplDebian11SetupBasic_printVersion() {
-    echo '0.1.4'
+    echo '0.1.5'
 }
 [[ $(type -t GplDebian11SetupBasic_printHelp) == function ]] || GplDebian11SetupBasic_printHelp() {
     cat << EOF
@@ -100,7 +100,7 @@ EOF
         fi
     done
     if [ -n "$aptnotfound" ];then
-        __; red Gagal menginstall aplikasi:"$aptnotfound"; exit; _.
+        __; red Gagal menginstall aplikasi:"$aptnotfound"; x
     fi
 }
 [[ $(type -t backupFile) == function ]] || backupFile() {

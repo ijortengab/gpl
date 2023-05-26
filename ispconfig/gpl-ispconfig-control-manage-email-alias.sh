@@ -29,7 +29,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplIspconfigControlManageEmailAlias_printVersion) == function ]] || GplIspconfigControlManageEmailAlias_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplIspconfigControlManageEmailAlias_printHelp) == function ]] || GplIspconfigControlManageEmailAlias_printHelp() {
     cat << EOF
@@ -629,7 +629,7 @@ ispconfig_db_user_host="$ISPCONFIG_DB_USER_HOST"
 code ispconfig_db_user_host="$ispconfig_db_user_host"
 databaseCredentialIspconfig
 if [[ -z "$ispconfig_db_name" || -z "$ispconfig_db_user" || -z "$ispconfig_db_user_password" ]];then
-    __; red Informasi credentials tidak lengkap: '`'/usr/local/share/ispconfig/credential/database'`'.; exit; _.
+    __; red Informasi credentials tidak lengkap: '`'/usr/local/share/ispconfig/credential/database'`'.; x
 else
     code ispconfig_db_name="$ispconfig_db_name"
     code ispconfig_db_user="$ispconfig_db_user"
@@ -644,7 +644,7 @@ roundcube_db_user_host="$ROUNDCUBE_DB_USER_HOST"
 code roundcube_db_user_host="$roundcube_db_user_host"
 databaseCredentialRoundcube
 if [[ -z "$roundcube_db_user" || -z "$roundcube_db_user_password" ]];then
-    __; red Informasi credentials tidak lengkap: '`'/usr/local/share/roundcube/credential/database'`'.; exit; _.
+    __; red Informasi credentials tidak lengkap: '`'/usr/local/share/roundcube/credential/database'`'.; x
 else
     code roundcube_db_user="$roundcube_db_user"
     code roundcube_db_user_password="$roundcube_db_user_password"

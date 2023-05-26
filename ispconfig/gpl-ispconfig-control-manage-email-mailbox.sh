@@ -25,7 +25,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplIspconfigControlManageEmailMailbox_printVersion) == function ]] || GplIspconfigControlManageEmailMailbox_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplIspconfigControlManageEmailMailbox_printHelp) == function ]] || GplIspconfigControlManageEmailMailbox_printHelp() {
     cat << EOF
@@ -318,7 +318,7 @@ ispconfig_db_user_host="$ISPCONFIG_DB_USER_HOST"
 code ispconfig_db_user_host="$ispconfig_db_user_host"
 databaseCredentialIspconfig
 if [[ -z "$ispconfig_db_name" || -z "$ispconfig_db_user" || -z "$ispconfig_db_user_password" ]];then
-    __; red Informasi credentials tidak lengkap: '`'/usr/local/share/ispconfig/credential/database'`'.; exit; _.
+    __; red Informasi credentials tidak lengkap: '`'/usr/local/share/ispconfig/credential/database'`'.; x
 else
     code ispconfig_db_name="$ispconfig_db_name"
     code ispconfig_db_user="$ispconfig_db_user"

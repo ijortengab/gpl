@@ -28,7 +28,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplIspconfigAutoinstallerNginxPhpFpm_printVersion) == function ]] || GplIspconfigAutoinstallerNginxPhpFpm_printVersion() {
-    echo '0.1.2'
+    echo '0.1.3'
 }
 [[ $(type -t GplIspconfigAutoinstallerNginxPhpFpm_printHelp) == function ]] || GplIspconfigAutoinstallerNginxPhpFpm_printHelp() {
     cat << EOF
@@ -291,13 +291,13 @@ fi
 chapter Mengecek credentials ISPConfig.
 databaseCredentialIspconfig
 if [[ -z "$ispconfig_db_user_password" ]];then
-    __; red Informasi credentials tidak lengkap: '`'/usr/local/share/ispconfig/credential/database'`'.; exit; _.
+    __; red Informasi credentials tidak lengkap: '`'/usr/local/share/ispconfig/credential/database'`'.; x
 else
     code ispconfig_db_user_password="$ispconfig_db_user_password"
 fi
 websiteCredentialIspconfig
 if [[ -z "$ispconfig_web_user_password" ]];then
-    __; red Informasi credentials tidak lengkap: '`'/usr/local/share/ispconfig/credential/website'`'.; exit; _.
+    __; red Informasi credentials tidak lengkap: '`'/usr/local/share/ispconfig/credential/website'`'.; x
 else
     code ispconfig_web_user_password="$ispconfig_web_user_password"
 fi
@@ -335,7 +335,7 @@ if [ -n "$notfound" ];then
     if grep -q -E "^\s*127\.0\.0\.1\s+${string_quoted}" /etc/hosts;then
         __; green Subdomain terdapat pada local DNS resolver '`'/etc/hosts'`'.; _.
     else
-        __; red Subdomain tidak terdapat pada local DNS resolver '`'/etc/hosts'`'.; exit; _.
+        __; red Subdomain tidak terdapat pada local DNS resolver '`'/etc/hosts'`'.; x
     fi
     ____
 fi
@@ -523,7 +523,7 @@ fi
 chapter Mengecek credentials ISPConfig.
 databaseCredentialIspconfig
 if [[ -z "$ispconfig_db_name" || -z "$ispconfig_db_user" ]];then
-    __; red Informasi credentials tidak lengkap: '`'/usr/local/share/ispconfig/credential/database'`'.; exit; _.
+    __; red Informasi credentials tidak lengkap: '`'/usr/local/share/ispconfig/credential/database'`'.; x
 else
     code ispconfig_db_name="$ispconfig_db_name"
     code ispconfig_db_user="$ispconfig_db_user"

@@ -20,7 +20,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplAmavisSetupIspconfig_printVersion) == function ]] || GplAmavisSetupIspconfig_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplAmavisSetupIspconfig_printHelp) == function ]] || GplAmavisSetupIspconfig_printHelp() {
     cat << EOF
@@ -202,7 +202,7 @@ done <<< `GplAmavisSetupIspconfig_printHelp | sed -n '/^Dependency:/,$p' | sed -
         fi
     done
     if [ -n "$aptnotfound" ];then
-        __; red Gagal menginstall aplikasi:"$aptnotfound"; exit; _.
+        __; red Gagal menginstall aplikasi:"$aptnotfound"; x
     fi
 }
 

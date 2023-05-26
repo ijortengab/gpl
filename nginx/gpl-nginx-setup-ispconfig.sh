@@ -20,7 +20,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplNginxSetupIspconfig_printVersion) == function ]] || GplNginxSetupIspconfig_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplNginxSetupIspconfig_printHelp) == function ]] || GplNginxSetupIspconfig_printHelp() {
     cat << EOF
@@ -152,7 +152,7 @@ chapter Mengecek ActiveState service Nginx. # Kadang bentrok dengan Apache2.
 msg=$(systemctl show nginx.service --no-page | grep ActiveState | grep -o -P "^ActiveState=\K(\S+)")
 restart=
 if [[ -z "$msg" ]];then
-    __; red Service nginx tidak ditemukan.; exit; _.
+    __; red Service nginx tidak ditemukan.; x
 elif [[ "$msg"  == 'active' ]];then
     __ Service nginx active.
 else
@@ -213,7 +213,7 @@ code=$(curl -L \
 [ $code -eq 403 ] && {
     __ HTTP Response code '`'$code'`' '('Required')'.
 } || {
-    __; red Terjadi kesalahan. HTTP Response code '`'$code'`'.; exit; _.
+    __; red Terjadi kesalahan. HTTP Response code '`'$code'`'.; x
 }
 ____
 
