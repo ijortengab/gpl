@@ -29,7 +29,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalSetupVariation2_printVersion) == function ]] || GplDrupalSetupVariation2_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplDrupalSetupVariation2_printHelp) == function ]] || GplDrupalSetupVariation2_printHelp() {
     cat << EOF
@@ -68,6 +68,7 @@ Dependency:
    gpl-nginx-autoinstaller.sh
    gpl-mariadb-autoinstaller.sh
    gpl-php-autoinstaller.sh
+   gpl-php-setup-adjust-cli-version.sh
    gpl-php-setup-drupal.sh
    gpl-composer-autoinstaller.sh
    gpl-drupal-autoinstaller-nginx-php-fpm.sh
@@ -164,6 +165,7 @@ source $(command -v gpl-debian11-setup-basic.sh)
 source $(command -v gpl-nginx-autoinstaller.sh)
 source $(command -v gpl-mariadb-autoinstaller.sh)
 source $(command -v gpl-php-autoinstaller.sh)
+source $(command -v gpl-php-setup-adjust-cli-version.sh)
 source $(command -v gpl-php-setup-drupal.sh)
 source $(command -v gpl-composer-autoinstaller.sh)
 source $(command -v gpl-drupal-autoinstaller-nginx-php-fpm.sh)

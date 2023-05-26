@@ -30,7 +30,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplIspconfigSetupVariation1_printVersion) == function ]] || GplIspconfigSetupVariation1_printVersion() {
-    echo '0.1.3'
+    echo '0.1.4'
 }
 [[ $(type -t GplIspconfigSetupVariation1_printHelp) == function ]] || GplIspconfigSetupVariation1_printHelp() {
     cat << EOF
@@ -89,6 +89,7 @@ Dependency:
    gpl-nginx-autoinstaller.sh
    gpl-nginx-setup-ispconfig.sh
    gpl-php-autoinstaller.sh
+   gpl-php-setup-adjust-cli-version.sh
    gpl-php-setup-ispconfig.sh
    gpl-postfix-autoinstaller.sh
    gpl-postfix-setup-ispconfig.sh
@@ -312,6 +313,7 @@ source $(command -v gpl-mariadb-setup-ispconfig.sh)
 source $(command -v gpl-nginx-autoinstaller.sh)
 source $(command -v gpl-nginx-setup-ispconfig.sh)
 source $(command -v gpl-php-autoinstaller.sh)
+source $(command -v gpl-php-setup-adjust-cli-version.sh)
 source $(command -v gpl-php-setup-ispconfig.sh)
 source $(command -v gpl-postfix-autoinstaller.sh)
 source $(command -v gpl-postfix-setup-ispconfig.sh)
