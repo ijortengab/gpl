@@ -29,7 +29,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalSetupVariation1_printVersion) == function ]] || GplDrupalSetupVariation1_printVersion() {
-    echo '0.1.4'
+    echo '0.1.5'
 }
 [[ $(type -t GplDrupalSetupVariation1_printHelp) == function ]] || GplDrupalSetupVariation1_printHelp() {
     cat << EOF
@@ -74,6 +74,7 @@ Dependency:
    gpl-drupal-autoinstaller-nginx-php-fpm.sh
    gpl-drupal-setup-wrapper-nginx-setup-drupal.sh
    gpl-drupal-setup-wrapper-nginx-setup-drupal.sh
+   gpl-drupal-setup-drush-alias.sh
    gpl-drupal-setup-dump-variables.sh
 EOF
 }
@@ -175,6 +176,7 @@ if [ -n "$domain" ];then
     source $(command -v gpl-drupal-setup-wrapper-nginx-setup-drupal.sh) --subdomain="${_domain}" --domain="localhost"
     domain="$_domain" # Restore variable.
 fi
+source $(command -v gpl-drupal-setup-drush-alias.sh)
 source $(command -v gpl-drupal-setup-dump-variables.sh)
 INDENT=${INDENT::-4}
 _;_, ____________________________________________________________________;_.;_.;
