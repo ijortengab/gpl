@@ -29,7 +29,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalSetupVariation2_printVersion) == function ]] || GplDrupalSetupVariation2_printVersion() {
-    echo '0.1.2'
+    echo '0.1.3'
 }
 [[ $(type -t GplDrupalSetupVariation2_printHelp) == function ]] || GplDrupalSetupVariation2_printHelp() {
     cat << EOF
@@ -64,7 +64,7 @@ Global Options.
         Bypass root checking.
 
 Dependency:
-   gpl-debian11-setup-basic.sh
+   gpl-debian-11-setup-basic.sh
    gpl-nginx-autoinstaller.sh
    gpl-mariadb-autoinstaller.sh
    gpl-php-autoinstaller.sh
@@ -162,7 +162,7 @@ fi
 _;_, ____________________________________________________________________;_.;_.;
 
 INDENT+="    "
-source $(command -v gpl-debian11-setup-basic.sh)
+source $(command -v gpl-debian-11-setup-basic.sh)
 source $(command -v gpl-nginx-autoinstaller.sh)
 source $(command -v gpl-mariadb-autoinstaller.sh)
 source $(command -v gpl-php-autoinstaller.sh)

@@ -22,7 +22,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDebian11SetupBasic_printVersion) == function ]] || GplDebian11SetupBasic_printVersion() {
-    echo '0.1.5'
+    echo '0.1.6'
 }
 [[ $(type -t GplDebian11SetupBasic_printHelp) == function ]] || GplDebian11SetupBasic_printHelp() {
     cat << EOF
@@ -32,7 +32,7 @@ Version `GplDebian11SetupBasic_printVersion`
 
 EOF
     cat << 'EOF'
-Usage: gpl-debian11-setup-basic.sh [options]
+Usage: gpl-debian-11-setup-basic.sh [options]
 
 Options:
    --timezone

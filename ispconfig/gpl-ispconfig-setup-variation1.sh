@@ -30,7 +30,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplIspconfigSetupVariation1_printVersion) == function ]] || GplIspconfigSetupVariation1_printVersion() {
-    echo '0.1.4'
+    echo '0.1.5'
 }
 [[ $(type -t GplIspconfigSetupVariation1_printHelp) == function ]] || GplIspconfigSetupVariation1_printHelp() {
     cat << EOF
@@ -83,7 +83,7 @@ Environment Variables:
 
 Dependency:
    wget
-   gpl-debian11-setup-basic.sh
+   gpl-debian-11-setup-basic.sh
    gpl-mariadb-autoinstaller.sh
    gpl-mariadb-setup-ispconfig.sh
    gpl-nginx-autoinstaller.sh
@@ -275,7 +275,7 @@ fileMustExists $HOME/.digitalocean-token.txt
 _;_, ____________________________________________________________________;_.;_.;
 
 INDENT+="    "
-source $(command -v gpl-debian11-setup-basic.sh)
+source $(command -v gpl-debian-11-setup-basic.sh)
 INDENT=${INDENT::-4}
 
 _;_, ____________________________________________________________________;_.;_.;
