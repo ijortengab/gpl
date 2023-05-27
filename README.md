@@ -1,14 +1,5 @@
-## Status Saat Ini
+# Gak Pake Lama
 
-unstable
+Pisau lipat serba guna bagi seorang `devops`.
 
-## README
-
-Cara cepat bikin system gak pake lama berbasis file configurasi YML.
-
-Just execute one command: `gpl`, and everything will be done.
-
-## Inspirasi
-
-Project ini terinspirasi dari Vagrant dan Docker
-
+Mempercepat saat developing dan memudahkan untuk operating.
