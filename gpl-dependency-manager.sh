@@ -24,7 +24,7 @@ command="$1"
 
 # Functions.
 [[ $(type -t GplDependencyManager_printVersion) == function ]] || GplDependencyManager_printVersion() {
-    echo '0.1.2'
+    echo '0.1.3'
 }
 [[ $(type -t GplDependencyManager_printHelp) == function ]] || GplDependencyManager_printHelp() {
     cat << EOF
@@ -283,10 +283,11 @@ until [[ ${#commands_required[@]} -eq 0 ]];do
     ____
 done
 
-chapter Finsih.
+chapter Finish.
+PATH="${BINARY_DIRECTORY}:${PATH}"
 __ Total sebanyak "${#commands_downloaded[@]}" file yang di download.
 for each in "${commands_downloaded[@]}"; do
-__; _, '- '; green "$each"; _.
+    __; _, '- '; green "$each"; _, ' '; yellow `"$each" --version`; _.
 done
 ____
 
