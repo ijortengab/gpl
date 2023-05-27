@@ -24,11 +24,11 @@ command="$1"
 
 # Functions.
 [[ $(type -t GplDependencyManager_printVersion) == function ]] || GplDependencyManager_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplDependencyManager_printHelp) == function ]] || GplDependencyManager_printHelp() {
     cat << EOF
-GPL Downloader
+GPL Dependency Manager
 Variation Default
 Version `GplDependencyManager_printVersion`
 
