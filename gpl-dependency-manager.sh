@@ -24,7 +24,7 @@ command="$1"
 
 # Functions.
 [[ $(type -t GplDependencyManager_printVersion) == function ]] || GplDependencyManager_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplDependencyManager_printHelp) == function ]] || GplDependencyManager_printHelp() {
     cat << EOF
@@ -236,6 +236,11 @@ until [[ ${#commands_required[@]} -eq 0 ]];do
     chapter Requires command.
     for each in "${commands_required[@]}"; do
         __ Requires command: "$each".
+        if [[ -f "$BINARY_DIRECTORY/$each" && ! -s "$BINARY_DIRECTORY/$each" ]];then
+            __ Empty file detected.
+            __; magenta rm "$BINARY_DIRECTORY/$each"; _.
+            rm "$BINARY_DIRECTORY/$each"
+        fi
         if [ ! -f "$BINARY_DIRECTORY/$each" ];then
             __ Memulai download.
             __; magenta wget https://github.com/ijortengab/gpl/raw/master/$(cut -d- -f2 <<< "$each")/"$each" -O "$BINARY_DIRECTORY/$each"; _.
