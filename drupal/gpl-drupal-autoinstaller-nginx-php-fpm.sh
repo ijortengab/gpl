@@ -29,7 +29,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalAutoinstallerNginxPhpFpm_printVersion) == function ]] || GplDrupalAutoinstallerNginxPhpFpm_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplDrupalAutoinstallerNginxPhpFpm_printHelp) == function ]] || GplDrupalAutoinstallerNginxPhpFpm_printHelp() {
     cat << EOF
@@ -350,7 +350,12 @@ if [ -n "$notfound" ];then
     fi
     # https://www.drupal.org/docs/develop/using-composer/manage-dependencies
     code composer create-project --no-install drupal/recommended-project . $drupal_version
-    sudo -u $user_nginx HOME='/tmp' -s composer create-project --no-install drupal/recommended-project . $drupal_version
+    # Code dibawah ini tidak mendetect environment variable terutama http_proxy,
+    # sehingga composer gagal mendownload.
+    # sudo -u $user_nginx HOME='/tmp' -s composer create-project --no-install drupal/recommended-project . $drupal_version
+    # Alternative menggunakan code dibawah ini.
+    # Credit: https://stackoverflow.com/a/8633575
+    sudo -u $user_nginx HOME='/tmp' -E bash -c "composer create-project --no-install drupal/recommended-project . $drupal_version"
     drupal_version="$_drupal_version"
     cd - >/dev/null
     ____
@@ -373,7 +378,8 @@ if [ -n "$notfound" ];then
     chapter Mendownload dependencies menggunakan Composer.
     cd /var/www/project/$project_dir/drupal
     code composer -v install
-    sudo -u $user_nginx HOME='/tmp' -s composer -v install
+    # sudo -u $user_nginx HOME='/tmp' -s composer -v install
+    sudo -u $user_nginx HOME='/tmp' -E bash -c 'composer -v install'
     cd - >/dev/null
     ____
 fi
@@ -394,7 +400,8 @@ if [ -n "$notfound" ];then
     chapter Memasang '`'Drush'`' menggunakan Composer.
     cd /var/www/project/$project_dir/drupal
     code composer -v require drush/drush
-    sudo -u $user_nginx HOME='/tmp' -s composer -v require drush/drush
+    # sudo -u $user_nginx HOME='/tmp' -s composer -v require drush/drush
+    sudo -u $user_nginx HOME='/tmp' -E bash -c 'composer -v require drush/drush'
     if [ -f /var/www/project/$project_dir/drupal/vendor/bin/drush ];then
         __; green Binary Drush is exists.
     else
