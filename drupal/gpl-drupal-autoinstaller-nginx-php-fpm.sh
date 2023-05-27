@@ -29,7 +29,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalAutoinstallerNginxPhpFpm_printVersion) == function ]] || GplDrupalAutoinstallerNginxPhpFpm_printVersion() {
-    echo '0.1.2'
+    echo '0.1.3'
 }
 [[ $(type -t GplDrupalAutoinstallerNginxPhpFpm_printHelp) == function ]] || GplDrupalAutoinstallerNginxPhpFpm_printHelp() {
     cat << EOF
@@ -183,6 +183,16 @@ EOF
         chmod 0500 /var/www/project/$project_dir/credential
         chmod 0500 /var/www/project/$project_dir/credential/drupal
         chmod 0400 /var/www/project/$project_dir/credential/drupal/$drupal_fqdn_localhost
+    fi
+}
+[[ $(type -t fileMustExists) == function ]] || fileMustExists() {
+    # global used:
+    # global modified:
+    # function used: __, success, error, x
+    if [ -f "$1" ];then
+        __; green File '`'$(basename "$1")'`' ditemukan.; _.
+    else
+        __; red File '`'$(basename "$1")'`' tidak ditemukan.; x
     fi
 }
 
@@ -358,6 +368,7 @@ if [ -n "$notfound" ];then
     sudo -u $user_nginx HOME='/tmp' -E bash -c "composer create-project --no-install drupal/recommended-project . $drupal_version"
     drupal_version="$_drupal_version"
     cd - >/dev/null
+    fileMustExists "/var/www/project/$project_dir/drupal/composer.json"
     ____
 fi
 
