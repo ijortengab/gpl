@@ -30,7 +30,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalSetupWrapperNginxSetupDrupal_printVersion) == function ]] || GplDrupalSetupWrapperNginxSetupDrupal_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplDrupalSetupWrapperNginxSetupDrupal_printHelp) == function ]] || GplDrupalSetupWrapperNginxSetupDrupal_printHelp() {
     cat << EOF
@@ -42,7 +42,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-drupal-setup-wrapper-nginx-setup-drupal.sh [command] [options]
 
-Options.
+Options:
    --php-version
         Set the version of PHP FPM.
    --subdomain

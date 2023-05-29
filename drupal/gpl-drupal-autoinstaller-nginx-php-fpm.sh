@@ -29,7 +29,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalAutoinstallerNginxPhpFpm_printVersion) == function ]] || GplDrupalAutoinstallerNginxPhpFpm_printVersion() {
-    echo '0.1.3'
+    echo '0.1.4'
 }
 [[ $(type -t GplDrupalAutoinstallerNginxPhpFpm_printHelp) == function ]] || GplDrupalAutoinstallerNginxPhpFpm_printHelp() {
     cat << EOF
@@ -41,7 +41,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-drupal-autoinstaller-nginx-php-fpm.sh [options]
 
-Options.
+Options:
    --project-name
         Set the project name. This should be in machine name format.
    --project-parent-name

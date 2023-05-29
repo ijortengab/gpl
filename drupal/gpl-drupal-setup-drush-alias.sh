@@ -26,7 +26,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalSetupDrushAlias_printVersion) == function ]] || GplDrupalSetupDrushAlias_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplDrupalSetupDrushAlias_printHelp) == function ]] || GplDrupalSetupDrushAlias_printHelp() {
     cat << EOF
@@ -38,7 +38,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-drupal-setup-drush-alias.sh [options]
 
-Options.
+Options:
    --project-name
         Set the project name. This should be in machine name format.
    --project-parent-name

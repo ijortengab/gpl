@@ -29,7 +29,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalSetupVariation3_printVersion) == function ]] || GplDrupalSetupVariation3_printVersion() {
-    echo '0.1.3'
+    echo '0.1.4'
 }
 [[ $(type -t GplDrupalSetupVariation3_printHelp) == function ]] || GplDrupalSetupVariation3_printHelp() {
     cat << EOF
@@ -41,7 +41,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-drupal-setup-variation3.sh [options]
 
-Options.
+Options:
    --project-name
         Set the project name. This should be in machine name format.
    --project-parent-name

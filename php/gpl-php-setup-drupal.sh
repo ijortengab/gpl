@@ -22,7 +22,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplPhpSetupDrupal_printVersion) == function ]] || GplPhpSetupDrupal_printVersion() {
-    echo '0.1.2'
+    echo '0.1.3'
 }
 [[ $(type -t GplPhpSetupDrupal_printHelp) == function ]] || GplPhpSetupDrupal_printHelp() {
     cat << EOF
@@ -34,7 +34,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-php-setup-drupal.sh [options]
 
-Options.
+Options:
    --php-version
         Set the version of PHP.
 

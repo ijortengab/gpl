@@ -29,7 +29,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplMariadbSetupDatabase_printVersion) == function ]] || GplMariadbSetupDatabase_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplMariadbSetupDatabase_printHelp) == function ]] || GplMariadbSetupDatabase_printHelp() {
     cat << EOF
@@ -41,7 +41,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-mariadb-setup-database.sh [options]
 
-Options.
+Options:
    --database-exists-sure
         Bypass database checking.
    --db-name

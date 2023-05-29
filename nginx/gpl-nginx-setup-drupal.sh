@@ -28,7 +28,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplNginxSetupDrupal_printVersion) == function ]] || GplNginxSetupDrupal_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplNginxSetupDrupal_printHelp) == function ]] || GplNginxSetupDrupal_printHelp() {
     cat << EOF
@@ -44,7 +44,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-nginx-setup-drupal.sh [options]
 
-Options.
+Options:
    --filename
         Set the filename to created inside /etc/nginx/sites-available directory.
    --root

@@ -26,7 +26,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalSetupDumpVariables_printVersion) == function ]] || GplDrupalSetupDumpVariables_printVersion() {
-    echo '0.1.2'
+    echo '0.1.3'
 }
 [[ $(type -t GplDrupalSetupDumpVariables_printHelp) == function ]] || GplDrupalSetupDumpVariables_printHelp() {
     cat << EOF
@@ -38,7 +38,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-drupal-setup-dump-variables.sh [options]
 
-Options.
+Options:
    --project-name
         Set the project name. This should be in machine name format.
    --project-parent-name

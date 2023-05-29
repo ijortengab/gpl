@@ -22,7 +22,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplPhpSetupAdjustCliVersion_printVersion) == function ]] || GplPhpSetupAdjustCliVersion_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplPhpSetupAdjustCliVersion_printHelp) == function ]] || GplPhpSetupAdjustCliVersion_printHelp() {
     cat << EOF
@@ -34,7 +34,7 @@ EOF
     cat << 'EOF'
 Usage: gpl-php-setup-adjust-cli-version.sh [options]
 
-Options.
+Options:
    --php-version
         Set the version of PHP.
 
