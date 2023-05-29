@@ -22,7 +22,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplWslSetupLempStack_printVersion) == function ]] || GplWslSetupLempStack_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplWslSetupLempStack_printHelp) == function ]] || GplWslSetupLempStack_printHelp() {
     cat << EOF
@@ -143,7 +143,9 @@ if [ -f /proc/sys/kernel/osrelease ];then
     read osrelease </proc/sys/kernel/osrelease
     code osrelease=$osrelease
     # debian: osrelease=5.10.0-19-amd64
-    if [[ "$osrelease" =~ microsoft ]];then
+    # wsl2: 4.4.0-19041-Microsoft
+    # wsl2: 4.19.128-microsoft-standard
+    if [[ "$osrelease" =~ microsoft || "$osrelease" =~ Microsoft ]];then
         __ Mesin merupakan WSL.
         wsl=1
     else

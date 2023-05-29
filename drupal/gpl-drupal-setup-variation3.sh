@@ -29,7 +29,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalSetupVariation3_printVersion) == function ]] || GplDrupalSetupVariation3_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplDrupalSetupVariation3_printHelp) == function ]] || GplDrupalSetupVariation3_printHelp() {
     cat << EOF
@@ -171,7 +171,7 @@ source $(command -v gpl-php-setup-adjust-cli-version.sh)
 source $(command -v gpl-php-setup-drupal.sh)
 if [ -f /proc/sys/kernel/osrelease ];then
     read osrelease </proc/sys/kernel/osrelease
-    if [[ "$osrelease" =~ microsoft ]];then
+    if [[ "$osrelease" =~ microsoft || "$osrelease" =~ Microsoft ]];then
         source $(command -v gpl-wsl-setup-lemp-stack.sh)
     fi
 fi
