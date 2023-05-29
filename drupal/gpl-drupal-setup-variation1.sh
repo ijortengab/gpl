@@ -29,7 +29,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalSetupVariation1_printVersion) == function ]] || GplDrupalSetupVariation1_printVersion() {
-    echo '0.1.8'
+    echo '0.1.9'
 }
 [[ $(type -t GplDrupalSetupVariation1_printHelp) == function ]] || GplDrupalSetupVariation1_printHelp() {
     cat << EOF
@@ -187,6 +187,11 @@ source $(command -v gpl-drupal-setup-drush-alias.sh)
 source $(command -v gpl-drupal-setup-dump-variables.sh)
 INDENT=${INDENT::-4}
 _;_, ____________________________________________________________________;_.;_.;
+
+chapter Finish
+e If you want to see the credentials again, please execute this command:
+code sudo -E $(command -v gpl-drupal-setup-dump-variables.sh)
+____
 
 # parse-options.sh \
 # --without-end-options-double-dash \

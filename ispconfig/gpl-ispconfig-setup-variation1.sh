@@ -30,7 +30,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplIspconfigSetupVariation1_printVersion) == function ]] || GplIspconfigSetupVariation1_printVersion() {
-    echo '0.1.5'
+    echo '0.1.6'
 }
 [[ $(type -t GplIspconfigSetupVariation1_printHelp) == function ]] || GplIspconfigSetupVariation1_printHelp() {
     cat << EOF
@@ -364,6 +364,11 @@ domain="$_domain" # Restore variable.
 source $(command -v gpl-ispconfig-setup-dump-variables.sh)
 INDENT=${INDENT::-4}
 _;_, ____________________________________________________________________;_.;_.;
+
+chapter Finish
+e If you want to see the credentials again, please execute this command:
+code sudo -E $(command -v gpl-ispconfig-setup-dump-variables.sh)
+____________________________________________________________________
 
 # parse-options.sh \
 # --without-end-options-double-dash \
