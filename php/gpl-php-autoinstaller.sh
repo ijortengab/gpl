@@ -22,7 +22,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplPhpAutoinstaller_printVersion) == function ]] || GplPhpAutoinstaller_printVersion() {
-    echo '0.1.2'
+    echo '0.1.3'
 }
 [[ $(type -t GplPhpAutoinstaller_printHelp) == function ]] || GplPhpAutoinstaller_printHelp() {
     cat << EOF
@@ -144,7 +144,38 @@ done <<< `GplPhpAutoinstaller_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2
         ____
     fi
 }
+[[ $(type -t addRepositoryPpaOndrejPhpUbuntu) == function ]] || addRepositoryPpaOndrejPhpUbuntu() {
+    local notfound=
+    local string string_quoted
+    chapter Mengecek source PPA ondrej/php
+    # Based on https://launchpad.net/~ondrej/+archive/ubuntu/php
+    cd /etc/apt/sources.list.d
+    string='https://ppa.launchpadcontent.net/ondrej/php/ubuntu/'
+    code string='"'$string'"'
+    string_quoted=$(sed "s/\./\\\./g" <<< "$string")
+    if grep --no-filename -R -E "$string_quoted" | grep -q -v -E '^\s*#';then
+        __ Sudah terdapat di direktori '`'/etc/apt/sources.list.d'`'.
+    else
+        notfound=1
+        __ Tidak terdapat di direktori '`'/etc/apt/sources.list.d'`'.
+    fi
+    cd - >/dev/null
+    ____
 
+    if [ -n "$notfound" ];then
+        chapter Menambahkan source PPA ondrej/php
+        code LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php -y
+        code apt update -y
+        LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php -y
+        apt update -y
+        if grep --no-filename -R -E "$string_quoted" | grep -q -v -E '^\s*#';then
+            __; green Sudah terdapat di direktori '`'/etc/apt/sources.list.d'`'.; _.
+        else
+            __; red Tidak terdapat di direktori '`'/etc/apt/sources.list.d'`'.;  x
+        fi
+        ____
+    fi
+}
 # Title.
 title GPL PHP Auto-Installer
 _ 'Variation '; yellow Default; _.
@@ -190,19 +221,25 @@ else
                         7.4) eligible=1 ;;
                         8.1) eligible=1; addRepositoryPpaOndrejPhp ;;
                         8.2) eligible=1; addRepositoryPpaOndrejPhp ;;
+                        *) error PHP Version "$php_version" not supported; x;
                     esac
                     ;;
+                *)
+                    error OS "$ID" Version "$VERSION_ID" not supported; x;
             esac
             ;;
         ubuntu)
             case "$VERSION_ID" in
                 22.04)
                     case "$php_version" in
-                        7.4) eligible=1; addRepositoryPpaOndrejPhp ;;
+                        7.4) eligible=1; addRepositoryPpaOndrejPhpUbuntu ;;
                         8.1) eligible=1 ;;
-                        8.2) eligible=1; addRepositoryPpaOndrejPhp ;;
+                        8.2) eligible=1; addRepositoryPpaOndrejPhpUbuntu ;;
+                        *) error PHP Version "$php_version" not supported; x;
                     esac
                     ;;
+                *)
+                    error OS "$ID" Version "$VERSION_ID" not supported; x;
             esac
             ;;
         *) error OS "$ID" not supported; x;
