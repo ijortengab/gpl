@@ -22,7 +22,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplPhpAutoinstaller_printVersion) == function ]] || GplPhpAutoinstaller_printVersion() {
-    echo '0.1.3'
+    echo '0.1.4'
 }
 [[ $(type -t GplPhpAutoinstaller_printHelp) == function ]] || GplPhpAutoinstaller_printHelp() {
     cat << EOF
@@ -121,6 +121,7 @@ done <<< `GplPhpAutoinstaller_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2
     # Based on https://packages.sury.org/php/README.txt
     cd /etc/apt/sources.list.d
     string='https://packages.sury.org/php/'
+    code string='"'$string'"'
     string_quoted=$(sed "s/\./\\\./g" <<< "$string")
     if grep --no-filename -R -E "$string_quoted" | grep -q -v -E '^\s*#';then
         __ Sudah terdapat di direktori '`'/etc/apt/sources.list.d'`'.
@@ -136,8 +137,13 @@ done <<< `GplPhpAutoinstaller_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2
         curl -sSLo /usr/share/keyrings/deb.sury.org-php.gpg https://packages.sury.org/php/apt.gpg
         sh -c 'echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list'
         apt update -y
+        cd /etc/apt/sources.list.d
+        string='https://packages.sury.org/php/'
+        code string='"'$string'"'
+        string_quoted=$(sed "s/\./\\\./g" <<< "$string")
         if grep --no-filename -R -E "$string_quoted" | grep -q -v -E '^\s*#';then
             __; green Sudah terdapat di direktori '`'/etc/apt/sources.list.d'`'.; _.
+            cd - >/dev/null
         else
             __; red Tidak terdapat di direktori '`'/etc/apt/sources.list.d'`'.;  x
         fi
@@ -168,8 +174,13 @@ done <<< `GplPhpAutoinstaller_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2
         code apt update -y
         LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php -y
         apt update -y
+        cd /etc/apt/sources.list.d
+        string='https://ppa.launchpadcontent.net/ondrej/php/ubuntu/'
+        code string='"'$string'"'
+        string_quoted=$(sed "s/\./\\\./g" <<< "$string")
         if grep --no-filename -R -E "$string_quoted" | grep -q -v -E '^\s*#';then
             __; green Sudah terdapat di direktori '`'/etc/apt/sources.list.d'`'.; _.
+            cd - >/dev/null
         else
             __; red Tidak terdapat di direktori '`'/etc/apt/sources.list.d'`'.;  x
         fi
