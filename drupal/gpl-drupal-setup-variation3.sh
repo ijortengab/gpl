@@ -29,7 +29,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalSetupVariation3_printVersion) == function ]] || GplDrupalSetupVariation3_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplDrupalSetupVariation3_printHelp) == function ]] || GplDrupalSetupVariation3_printHelp() {
     cat << EOF
@@ -70,6 +70,7 @@ Dependency:
    gpl-php-autoinstaller.sh
    gpl-php-setup-adjust-cli-version.sh
    gpl-php-setup-drupal.sh
+   gpl-wsl-setup-lemp-stack.sh
    gpl-composer-autoinstaller.sh
    gpl-drupal-autoinstaller-nginx-php-fpm.sh
    gpl-drupal-setup-wrapper-nginx-setup-drupal.sh
@@ -168,6 +169,12 @@ source $(command -v gpl-mariadb-autoinstaller.sh)
 source $(command -v gpl-php-autoinstaller.sh)
 source $(command -v gpl-php-setup-adjust-cli-version.sh)
 source $(command -v gpl-php-setup-drupal.sh)
+if [ -f /proc/sys/kernel/osrelease ];then
+    read osrelease </proc/sys/kernel/osrelease
+    if [[ "$osrelease" =~ microsoft ]];then
+        source $(command -v gpl-wsl-setup-lemp-stack.sh)
+    fi
+fi
 source $(command -v gpl-composer-autoinstaller.sh)
 source $(command -v gpl-drupal-autoinstaller-nginx-php-fpm.sh)
 if [ -n "$domain" ];then
