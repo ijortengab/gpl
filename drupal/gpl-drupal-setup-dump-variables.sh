@@ -26,7 +26,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalSetupDumpVariables_printVersion) == function ]] || GplDrupalSetupDumpVariables_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplDrupalSetupDumpVariables_printHelp) == function ]] || GplDrupalSetupDumpVariables_printHelp() {
     cat << EOF
@@ -55,6 +55,10 @@ Global Options.
         Show this help.
    --root-sure
         Bypass root checking.
+
+Environment Variables:
+   HOME_DIRECTORY
+        Default to $HOME
 EOF
 }
 
@@ -132,6 +136,8 @@ ____
 
 # Require, validate, and populate value.
 chapter Dump variable.
+HOME_DIRECTORY=${HOME_DIRECTORY:=$HOME}
+code 'HOME_DIRECTORY="'$HOME_DIRECTORY'"'
 until [[ -n "$project_name" ]];do
     read -p "Argument --project-name required: " project_name
 done
@@ -181,6 +187,25 @@ databaseCredentialDrupal
 e ' - 'username: $drupal_db_user
 e '   'password: $drupal_db_user_password
 ____
+
+list_uri=("${drupal_fqdn_localhost}")
+if [ -n "$domain" ];then
+    list_uri=("${domain}")
+fi
+for uri in "${list_uri[@]}";do
+    each="cd.${uri}"
+    if [ -f "$HOME_DIRECTORY/$each" ];then
+        chapter Drush command for $uri
+        if [[ "$HOME_DIRECTORY" == "$HOME" ]];then
+            code cd
+        else
+            code cd '"'"$HOME_DIRECTORY"'"'
+        fi
+        code . "${each}"
+        code drush status
+        ____
+    fi
+done
 
 # parse-options.sh \
 # --without-end-options-double-dash \

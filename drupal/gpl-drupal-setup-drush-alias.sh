@@ -26,7 +26,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalSetupDrushAlias_printVersion) == function ]] || GplDrupalSetupDrushAlias_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplDrupalSetupDrushAlias_printHelp) == function ]] || GplDrupalSetupDrushAlias_printHelp() {
     cat << EOF
@@ -55,6 +55,10 @@ Global Options.
         Show this help.
    --root-sure
         Bypass root checking.
+
+Environment Variables:
+   HOME_DIRECTORY
+        Default to $HOME
 EOF
 }
 
