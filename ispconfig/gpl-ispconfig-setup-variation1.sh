@@ -30,7 +30,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplIspconfigSetupVariation1_printVersion) == function ]] || GplIspconfigSetupVariation1_printVersion() {
-    echo '0.1.6'
+    echo '0.1.7'
 }
 [[ $(type -t GplIspconfigSetupVariation1_printHelp) == function ]] || GplIspconfigSetupVariation1_printHelp() {
     cat << EOF
@@ -46,13 +46,15 @@ Usage: gpl-ispconfig-setup-variation1.sh [options]
 Options:
    --timezone
         Set the timezone of this machine.
-   --hostname
+   --hostname *
         Hostname of the server.
-   --domain
+   --domain *
         Domain name of the server.
-   --ip-address
-        Set the IP Address. Use with A record while registered.
-  --non-interactive
+   --digitalocean-token *
+        Token access from digitalocean.com to consume DigitalOcean API.
+   --ip-address *
+        Set the IP Address. Use with A record while registered. Tips: Try --ip-address=auto.
+   --non-interactive ^
         Skip confirmation of --ip-address=auto.
 
 Global Options:
