@@ -29,7 +29,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalSetupVariation1_printVersion) == function ]] || GplDrupalSetupVariation1_printVersion() {
-    echo '0.1.10'
+    echo '0.1.11'
 }
 [[ $(type -t GplDrupalSetupVariation1_printHelp) == function ]] || GplDrupalSetupVariation1_printHelp() {
     cat << EOF
@@ -42,7 +42,7 @@ EOF
 Usage: gpl-drupal-setup-variation1.sh [options]
 
 Options:
-   --project-name
+   --project-name *
         Set the project name. This should be in machine name format.
    --project-parent-name
         Set the project parent name. The parent is not have to installed before.
@@ -50,7 +50,7 @@ Options:
         Set the timezone of this machine.
    --domain
         Set the domain.
-   --domain-strict
+   --domain-strict ^
         Prevent installing drupal inside directory sites/default.
 
 Global Options.
