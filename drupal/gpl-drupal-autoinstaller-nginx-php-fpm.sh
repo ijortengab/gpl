@@ -29,7 +29,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplDrupalAutoinstallerNginxPhpFpm_printVersion) == function ]] || GplDrupalAutoinstallerNginxPhpFpm_printVersion() {
-    echo '0.1.4'
+    echo '0.1.5'
 }
 [[ $(type -t GplDrupalAutoinstallerNginxPhpFpm_printHelp) == function ]] || GplDrupalAutoinstallerNginxPhpFpm_printHelp() {
     cat << EOF
@@ -256,7 +256,6 @@ if [ -z "$root_sure" ];then
     fi
     ____
 fi
-____
 
 chapter Mengecek direktori project '`'/var/www/project/$project_dir/drupal/web'`'.
 notfound=
