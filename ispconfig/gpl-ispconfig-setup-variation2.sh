@@ -30,12 +30,12 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplIspconfigSetupVariation1_printVersion) == function ]] || GplIspconfigSetupVariation1_printVersion() {
-    echo '0.1.8'
+    echo '0.1.0'
 }
 [[ $(type -t GplIspconfigSetupVariation1_printHelp) == function ]] || GplIspconfigSetupVariation1_printHelp() {
     cat << EOF
 GPL ISPConfig Setup
-Variation 1. Debian 11, ISPConfig 3.2.7, PHPMyAdmin 5.2.0, Roundcube 1.6.0,
+Variation 2. Ubuntu 22.04, ISPConfig 3.2.7, PHPMyAdmin 5.2.0, Roundcube 1.6.0,
 PHP 7.4, DigitalOcean DNS.
 Version `GplIspconfigSetupVariation1_printVersion`
 
@@ -87,7 +87,7 @@ Environment Variables:
 
 Dependency:
    wget
-   gpl-debian-11-setup-basic.sh
+   gpl-ubuntu-22.04-setup-basic.sh
    gpl-mariadb-autoinstaller.sh
    gpl-mariadb-setup-ispconfig.sh
    gpl-nginx-autoinstaller.sh
@@ -182,7 +182,7 @@ done <<< `GplIspconfigSetupVariation1_printHelp | sed -n '/^Dependency:/,$p' | s
 
 # Title.
 title GPL ISPConfig Setup
-_ 'Variation '; yellow 1; _, . Debian 11, ISPConfig 3.2.7, PHPMyAdmin 5.2.0, Roundcube 1.6.0, ; _.
+_ 'Variation '; yellow 2; _, . Ubuntu 22.04, ISPConfig 3.2.7, PHPMyAdmin 5.2.0, Roundcube 1.6.0, ; _.
 e PHP 7.4, DigitalOcean DNS.
 _ 'Version '; yellow `GplIspconfigSetupVariation1_printVersion`; _.
 ____
@@ -279,7 +279,7 @@ fileMustExists $HOME/.digitalocean-token.txt
 _;_, ____________________________________________________________________;_.;_.;
 
 INDENT+="    "
-source $(command -v gpl-debian-11-setup-basic.sh)
+source $(command -v gpl-ubuntu-22.04-setup-basic.sh)
 INDENT=${INDENT::-4}
 
 _;_, ____________________________________________________________________;_.;_.;
