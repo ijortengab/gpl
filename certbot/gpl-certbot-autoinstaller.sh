@@ -18,14 +18,14 @@ set -- "${_new_arguments[@]}"
 unset _new_arguments
 
 # Functions.
-[[ $(type -t GplCertbotDigitaloceanAutoinstaller_printVersion) == function ]] || GplCertbotDigitaloceanAutoinstaller_printVersion() {
-    echo '0.1.3'
+[[ $(type -t GplCertbotAutoinstaller_printVersion) == function ]] || GplCertbotAutoinstaller_printVersion() {
+    echo '0.1.4'
 }
-[[ $(type -t GplCertbotDigitaloceanAutoinstaller_printHelp) == function ]] || GplCertbotDigitaloceanAutoinstaller_printHelp() {
+[[ $(type -t GplCertbotAutoinstaller_printHelp) == function ]] || GplCertbotAutoinstaller_printHelp() {
     cat << EOF
 GPL Certbot Autoinstaller
 Variation Default
-Version `GplCertbotDigitaloceanAutoinstaller_printVersion`
+Version `GplCertbotAutoinstaller_printVersion`
 
 EOF
     cat << 'EOF'
@@ -44,8 +44,8 @@ EOF
 }
 
 # Help and Version.
-[ -n "$help" ] && { GplCertbotDigitaloceanAutoinstaller_printHelp; exit 1; }
-[ -n "$version" ] && { GplCertbotDigitaloceanAutoinstaller_printVersion; exit 1; }
+[ -n "$help" ] && { GplCertbotAutoinstaller_printHelp; exit 1; }
+[ -n "$version" ] && { GplCertbotAutoinstaller_printVersion; exit 1; }
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }
@@ -101,7 +101,7 @@ EOF
 # Title.
 title GPL Certbot Autoinstaller
 _ 'Variation '; yellow Default; _.
-_ 'Version '; yellow `GplCertbotDigitaloceanAutoinstaller_printVersion`; _.
+_ 'Version '; yellow `GplCertbotAutoinstaller_printVersion`; _.
 ____
 
 # Require, validate, and populate value.
