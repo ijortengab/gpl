@@ -20,11 +20,11 @@ set -- "${_new_arguments[@]}"
 unset _new_arguments
 
 # Command.
-command="$1"
+command="$1"; shift
 
 # Functions.
 [[ $(type -t GplDependencyManager_printVersion) == function ]] || GplDependencyManager_printVersion() {
-    echo '0.1.3'
+    echo '0.1.4'
 }
 [[ $(type -t GplDependencyManager_printHelp) == function ]] || GplDependencyManager_printHelp() {
     cat << EOF

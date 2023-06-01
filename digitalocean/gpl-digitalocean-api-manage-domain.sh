@@ -23,7 +23,7 @@ set -- "${_new_arguments[@]}"
 unset _new_arguments
 
 # Command.
-command="$1"
+command="$1"; shift
 if [ -n "$command" ];then
     case "$command" in
         add|delete) ;;
@@ -33,7 +33,7 @@ fi
 
 # Functions.
 [[ $(type -t GplDigitaloceanApiManageDomain_printVersion) == function ]] || GplDigitaloceanApiManageDomain_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplDigitaloceanApiManageDomain_printHelp) == function ]] || GplDigitaloceanApiManageDomain_printHelp() {
     cat << EOF

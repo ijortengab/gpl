@@ -21,7 +21,7 @@ set -- "${_new_arguments[@]}"
 unset _new_arguments
 
 # Command.
-command="$1"
+command="$1"; shift
 if [ -n "$command" ];then
     case "$command" in
         add|delete|isset|get_dns_record) ;;
@@ -31,7 +31,7 @@ fi
 
 # Functions.
 [[ $(type -t GplIspconfigControlManageDomain_printVersion) == function ]] || GplIspconfigControlManageDomain_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplIspconfigControlManageDomain_printHelp) == function ]] || GplIspconfigControlManageDomain_printHelp() {
     cat << EOF
