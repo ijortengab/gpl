@@ -20,7 +20,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplPostfixSetupIspconfig_printVersion) == function ]] || GplPostfixSetupIspconfig_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplPostfixSetupIspconfig_printHelp) == function ]] || GplPostfixSetupIspconfig_printHelp() {
     cat << EOF
@@ -80,6 +80,36 @@ done <<< `GplPostfixSetupIspconfig_printHelp | sed -n '/^Dependency:/,$p' | sed 
 [[ $(type -t ____) == function ]] || ____() { echo >&2; [ -n "$delay" ] && sleep "$delay"; }
 
 # Functions.
+
+[[ $(type -t downloadApplication) == function ]] || downloadApplication() {
+    local aptnotfound=
+    chapter Melakukan instalasi aplikasi "$@".
+    [ -z "$aptinstalled" ] && aptinstalled=$(apt --installed list 2>/dev/null)
+    for i in "$@"; do
+        if ! grep -q "^$i/" <<< "$aptinstalled";then
+            aptnotfound+=" $i"
+        fi
+    done
+    if [ -n "$aptnotfound" ];then
+        __ Menginstal.
+        code apt install -y"$aptnotfound"
+        apt install -y --no-install-recommends $aptnotfound
+        aptinstalled=$(apt --installed list 2>/dev/null)
+    else
+        __ Aplikasi sudah terinstall seluruhnya.
+    fi
+}
+[[ $(type -t validateApplication) == function ]] || validateApplication() {
+    local aptnotfound=
+    for i in "$@"; do
+        if ! grep -q "^$i/" <<< "$aptinstalled";then
+            aptnotfound+=" $i"
+        fi
+    done
+    if [ -n "$aptnotfound" ];then
+        __; red Gagal menginstall aplikasi:"$aptnotfound"; x
+    fi
+}
 [[ $(type -t backupFile) == function ]] || backupFile() {
     local mode="$1"
     local oldpath="$2" i newpath
