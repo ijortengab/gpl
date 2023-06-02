@@ -28,7 +28,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplNginxSetupPhpFpm_printVersion) == function ]] || GplNginxSetupPhpFpm_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplNginxSetupPhpFpm_printHelp) == function ]] || GplNginxSetupPhpFpm_printHelp() {
     cat << EOF
@@ -155,6 +155,7 @@ fi
 
 file_config="/etc/nginx/sites-available/$filename"
 create_new=
+reload=
 chapter Memeriksa file konfigurasi.
 if [ -f "$file_config" ];then
     __ File ditemukan: '`'$file_config'`'.
@@ -221,23 +222,32 @@ EOF
         sed -i -E "s/server_name([^;]+);/server_name\1 "${string}";/" "$file_config"
     done
     sed -i -E "s/server_name\s{2}/server_name /" "$file_config"
-    __; _, Mengecek link di direktori sites-enabled:' ';
-    if [ -L /etc/nginx/sites-enabled/$filename ];then
-        _, Link sudah ada.; _.
-    else
-        _ Membuat link.' '
-        cd /etc/nginx/sites-enabled/
-        ln -sf ../sites-available/$filename
-        cd - >/dev/null
-        if [ -L /etc/nginx/sites-enabled/$filename ];then
-            success Berhasil dibuat.
-        else
-            error Gagal dibuat.; x
-        fi
-    fi
+    reload=1
     ____
+fi
 
+chapter Mengecek link di direktori sites-enabled.
+if [ -L /etc/nginx/sites-enabled/$filename ];then
+    __ Link sudah ada.
+else
+    __ Membuat link.
+    cd /etc/nginx/sites-enabled/
+    ln -sf ../sites-available/$filename
+    cd - >/dev/null
+    if [ -L /etc/nginx/sites-enabled/$filename ];then
+        success Berhasil dibuat.
+        reload=1
+    else
+        error Gagal dibuat.; x
+    fi
+fi
+____
+
+if [ -n "$reload" ];then
     chapter Reload nginx configuration.
+    __ Cleaning broken symbolic link.
+    code find /etc/nginx/sites-enabled -xtype l -delete -print
+    find /etc/nginx/sites-enabled -xtype l -delete -print
     if nginx -t 2> /dev/null;then
         code nginx -s reload
         nginx -s reload; sleep .5
@@ -245,6 +255,7 @@ EOF
         error Terjadi kesalahan konfigurasi nginx. Gagal reload nginx.; x
     fi
     ____
+
 fi
 
 chapter Memeriksa ulang file konfigurasi.
@@ -259,7 +270,6 @@ string="$root"
 string_quoted=$(sed "s/\./\\\./g" <<< "$string")
 if grep -q -E "^\s*root\s+.*$string_quoted.*;\s*$" "$file_config";then
     __; green Directive root "$string" sudah terdapat pada file config.; _.
-    reload=1
 else
     __; red Directive root "$string" belum terdapat pada file config.; x
 fi

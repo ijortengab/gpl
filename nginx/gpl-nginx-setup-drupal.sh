@@ -28,7 +28,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplNginxSetupDrupal_printVersion) == function ]] || GplNginxSetupDrupal_printVersion() {
-    echo '0.1.2'
+    echo '0.1.3'
 }
 [[ $(type -t GplNginxSetupDrupal_printHelp) == function ]] || GplNginxSetupDrupal_printHelp() {
     cat << EOF
@@ -243,6 +243,9 @@ EOF
     ____
 
     chapter Reload nginx configuration.
+    __ Cleaning broken symbolic link.
+    code find /etc/nginx/sites-enabled -xtype l -delete -print
+    find /etc/nginx/sites-enabled -xtype l -delete -print
     if nginx -t 2> /dev/null;then
         code nginx -s reload
         nginx -s reload; sleep .5

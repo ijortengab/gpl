@@ -20,7 +20,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplNginxSetupIspconfig_printVersion) == function ]] || GplNginxSetupIspconfig_printVersion() {
-    echo '0.1.2'
+    echo '0.1.3'
 }
 [[ $(type -t GplNginxSetupIspconfig_printHelp) == function ]] || GplNginxSetupIspconfig_printHelp() {
     cat << EOF
@@ -198,7 +198,11 @@ server {
 EOF
     cd /etc/nginx/sites-enabled/
     ln -sf ../sites-available/default
+    __ Cleaning broken symbolic link.
+    code find /etc/nginx/sites-enabled -xtype l -delete -print
+    find /etc/nginx/sites-enabled -xtype l -delete -print
     if nginx -t 2> /dev/null;then
+        code nginx -s reload
         nginx -s reload
         sleep .5
     else

@@ -27,7 +27,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplNginxSetupStatic_printVersion) == function ]] || GplNginxSetupStatic_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplNginxSetupStatic_printHelp) == function ]] || GplNginxSetupStatic_printHelp() {
     cat << EOF
@@ -220,6 +220,9 @@ EOF
     ____
 
     chapter Reload nginx configuration.
+    __ Cleaning broken symbolic link.
+    code find /etc/nginx/sites-enabled -xtype l -delete -print
+    find /etc/nginx/sites-enabled -xtype l -delete -print
     if nginx -t 2> /dev/null;then
         code nginx -s reload
         nginx -s reload; sleep .5

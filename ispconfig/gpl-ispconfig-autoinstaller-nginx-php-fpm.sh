@@ -28,7 +28,7 @@ unset _new_arguments
 
 # Functions.
 [[ $(type -t GplIspconfigAutoinstallerNginxPhpFpm_printVersion) == function ]] || GplIspconfigAutoinstallerNginxPhpFpm_printVersion() {
-    echo '0.1.3'
+    echo '0.1.4'
 }
 [[ $(type -t GplIspconfigAutoinstallerNginxPhpFpm_printHelp) == function ]] || GplIspconfigAutoinstallerNginxPhpFpm_printHelp() {
     cat << EOF
@@ -59,7 +59,7 @@ Global Options:
         Show this help.
    --root-sure
         Bypass root checking.
-        
+
 Environment Variables:
    ISPCONFIG_FQDN_LOCALHOST
         Default to ispconfig.localhost
@@ -559,6 +559,9 @@ ____
 
 if [ -n "$reload" ];then
     chapter Reload nginx configuration.
+    __ Cleaning broken symbolic link.
+    code find /etc/nginx/sites-enabled -xtype l -delete -print
+    find /etc/nginx/sites-enabled -xtype l -delete -print
     if nginx -t 2> /dev/null;then
         code nginx -s reload
         nginx -s reload; sleep .5
