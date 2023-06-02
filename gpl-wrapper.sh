@@ -37,7 +37,7 @@ fi
 
 # Functions.
 [[ $(type -t GplWrapper_printVersion) == function ]] || GplWrapper_printVersion() {
-    echo '0.1.0'
+    echo '0.1.1'
 }
 [[ $(type -t GplWrapper_printHelp) == function ]] || GplWrapper_printHelp() {
     cat << EOF
@@ -64,20 +64,12 @@ Global Options:
 Environment Variables:
    BINARY_DIRECTORY
         Default to $HOME/bin
-
-Dependency:
-   gpl-dependency-manager.sh
 EOF
 }
 
 # Help and Version.
 [ -n "$help" ] && { GplWrapper_printHelp; exit 1; }
 [ -n "$version" ] && { GplWrapper_printVersion; exit 1; }
-
-# Dependency.
-while IFS= read -r line; do
-    command -v "${line}" >/dev/null || { echo -e "\e[91m""Unable to proceed, ${line} command not found." "\e[39m"; exit 1; }
-done <<< `GplWrapper_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' | sed 's/^ *//g'`
 
 # Common Functions.
 [[ $(type -t red) == function ]] || red() { echo -ne "\e[91m" >&2; echo -n "$@" >&2; echo -ne "\e[39m" >&2; }
@@ -99,6 +91,38 @@ done <<< `GplWrapper_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' |
 [[ $(type -t ____) == function ]] || ____() { echo >&2; [ -n "$delay" ] && sleep "$delay"; }
 
 # Functions.
+[[ $(type -t GplWrapper_GplDownloader) == function ]] || GplWrapper_GplDownloader() {
+    each="$1"
+    inside_directory="$2"
+    chapter Requires command: "$each".
+    if [[ -f "$BINARY_DIRECTORY/$each" && ! -s "$BINARY_DIRECTORY/$each" ]];then
+        __ Empty file detected.
+        __; magenta rm "$BINARY_DIRECTORY/$each"; _.
+        rm "$BINARY_DIRECTORY/$each"
+    fi
+    if [ ! -f "$BINARY_DIRECTORY/$each" ];then
+        __ Memulai download.
+        if [ -z "$inside_directory" ];then
+            __; magenta wget https://github.com/ijortengab/gpl/raw/master/"$each" -O "$BINARY_DIRECTORY/$each"; _.
+            wget -q https://github.com/ijortengab/gpl/raw/master/"$each" -O "$BINARY_DIRECTORY/$each"
+        else
+            __; magenta wget https://github.com/ijortengab/gpl/raw/master/$(cut -d- -f2 <<< "$each")/"$each" -O "$BINARY_DIRECTORY/$each"; _.
+            wget -q https://github.com/ijortengab/gpl/raw/master/$(cut -d- -f2 <<< "$each")/"$each" -O "$BINARY_DIRECTORY/$each"
+        fi
+        if [ ! -s "$BINARY_DIRECTORY/$each" ];then
+            __; magenta rm "$BINARY_DIRECTORY/$each"; _.
+            rm "$BINARY_DIRECTORY/$each"
+            __; red HTTP Response: 404 Not Found; x
+        fi
+        __; magenta chmod a+x "$BINARY_DIRECTORY/$each"; _.
+        chmod a+x "$BINARY_DIRECTORY/$each"
+    elif [[ ! -x "$BINARY_DIRECTORY/$each" ]];then
+        __; magenta chmod a+x "$BINARY_DIRECTORY/$each"; _.
+        chmod a+x "$BINARY_DIRECTORY/$each"
+    fi
+    fileMustExists "$BINARY_DIRECTORY/$each"
+    ____
+}
 [[ $(type -t GplWrapper_GplPromptOptions) == function ]] || GplWrapper_GplPromptOptions() {
     command="$1"
     argument_pass=()
@@ -199,6 +223,7 @@ done <<< `GplWrapper_printHelp | sed -n '/^Dependency:/,$p' | sed -n '2,/^$/p' |
     fi
 }
 
+# Execute command.
 if [ $command == list ];then
     cat << 'EOF'
 gpl-amavis-setup-ispconfig.sh
@@ -259,6 +284,7 @@ EOF
 
 fi
 
+# Prompt.
 if [ -z "$fast" ];then
     seconds=2
     start="$(($(date +%s) + $seconds))"
@@ -295,26 +321,50 @@ if [ -z "$root_sure" ];then
     ____
 fi
 
-chapter Execute:
-[ -n "$fast" ] && isfast='--fast ' || isfast=''
-code gpl-dependency-manager.sh ${isfast}$command
-____
+if [ -z "$binary_directory_exists_sure" ];then
+    chapter Mempersiapkan directory binary.
+    __; code BINARY_DIRECTORY=$BINARY_DIRECTORY
+    notfound=
+    if [ -d "$BINARY_DIRECTORY" ];then
+        __ Direktori '`'$BINARY_DIRECTORY'`' ditemukan.
+        binary_directory_exists_sure=1
+    else
+        __ Direktori '`'$BINARY_DIRECTORY'`' tidak ditemukan.
+        notfound=1
+    fi
+    ____
 
-_ -----------------------------------------------------------------------;_.;_.;
-command -v "gpl-dependency-manager.sh" >/dev/null || { red "Unable to proceed, gpl-dependency-manager.sh command not found." "\e[39m"; x; }
-BINARY_DIRECTORY="$BINARY_DIRECTORY" INDENT="    " gpl-dependency-manager.sh $command $isfast --root-sure --binary-directory-exists-sure
-_ -----------------------------------------------------------------------;_.;_.;
+    if [ -n "$notfound" ];then
+        chapter Membuat directory.
+        mkdir -p "$BINARY_DIRECTORY"
+        if [ -d "$BINARY_DIRECTORY" ];then
+            __; green Direktori '`'$BINARY_DIRECTORY'`' ditemukan.; _.
+            binary_directory_exists_sure=1
+        else
+            __; red Direktori '`'$BINARY_DIRECTORY'`' tidak ditemukan.; x
+        fi
+        ____
+    fi
+fi
 
 PATH="${BINARY_DIRECTORY}:${PATH}"
-GplWrapper_GplPromptOptions $command
-if [[ "${#argument_pass[@]}" -gt 0 ]];then
-    set -- "${argument_pass[@]}"
-    unset argument_pass
+GplWrapper_GplDownloader gpl-dependency-manager.sh
+____
+
+GplWrapper_GplDownloader $command true
+
+if [ $# -eq 0 ];then
+    GplWrapper_GplPromptOptions $command
+    if [[ "${#argument_pass[@]}" -gt 0 ]];then
+        set -- "${argument_pass[@]}"
+        unset argument_pass
+    fi
 fi
 
 chapter Execute:
 [ -n "$fast" ] && isfast='--fast ' || isfast=''
-code $command ${isfast}"$@"
+code gpl-dependency-manager.sh ${isfast}${$command}
+code ${$command} ${isfast}"$@"
 ____
 
 if [ -z "$fast" ];then
@@ -336,6 +386,8 @@ GplWrapper_BEGIN=$SECONDS
 ____
 
 _ -----------------------------------------------------------------------;_.;_.;
+command -v "gpl-dependency-manager.sh" >/dev/null || { red "Unable to proceed, gpl-dependency-manager.sh command not found." "\e[39m"; x; }
+INDENT="    " gpl-dependency-manager.sh $command $isfast --root-sure --binary-directory-exists-sure
 command -v "$command" >/dev/null || { red "Unable to proceed, $command command not found."; x; }
 INDENT="    " $command $isfast --root-sure "$@"
 _ -----------------------------------------------------------------------;_.;_.;

@@ -24,7 +24,7 @@ command="$1"; shift
 
 # Functions.
 [[ $(type -t GplDependencyManager_printVersion) == function ]] || GplDependencyManager_printVersion() {
-    echo '0.1.4'
+    echo '0.1.5'
 }
 [[ $(type -t GplDependencyManager_printHelp) == function ]] || GplDependencyManager_printHelp() {
     cat << EOF
@@ -211,6 +211,7 @@ if [ -z "$binary_directory_exists_sure" ];then
     notfound=
     if [ -d "$BINARY_DIRECTORY" ];then
         __ Direktori '`'$BINARY_DIRECTORY'`' ditemukan.
+        binary_directory_exists_sure=1
     else
         __ Direktori '`'$BINARY_DIRECTORY'`' tidak ditemukan.
         notfound=1
@@ -222,6 +223,7 @@ if [ -z "$binary_directory_exists_sure" ];then
         mkdir -p "$BINARY_DIRECTORY"
         if [ -d "$BINARY_DIRECTORY" ];then
             __; green Direktori '`'$BINARY_DIRECTORY'`' ditemukan.; _.
+            binary_directory_exists_sure=1
         else
             __; red Direktori '`'$BINARY_DIRECTORY'`' tidak ditemukan.; x
         fi
