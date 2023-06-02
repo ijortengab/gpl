@@ -6,38 +6,48 @@ Mempercepat saat developing dan memudahkan untuk operating.
 
 ## Getting Started
 
-Download `gpl-dependency-manager.sh` first.
+Download `gpl-wrapper.sh` and `gpl-dependency-manager.sh` first.
 
 ```
 mkdir -p ~/bin
 export PATH=~/bin:$PATH
 cd ~/bin
+wget https://github.com/ijortengab/gpl/raw/master/gpl-wrapper.sh -O gpl-wrapper.sh
+chmod a+x gpl-wrapper.sh
 wget https://github.com/ijortengab/gpl/raw/master/gpl-dependency-manager.sh -O gpl-dependency-manager.sh
+chmod a+x gpl-dependency-manager.sh
 cd -
 ```
 
-Download any script you wants using `gpl-dependency-manager.sh`.
-
-Example, download `gpl-nginx-setup-hello-world-static.sh`.
+Make sure that directory `~/bin` has been include as `$PATH` in `~/.bashrc`.
 
 ```
-gpl-dependency-manager.sh gpl-nginx-setup-hello-world-static.sh
+export PATH=~/bin:$PATH
 ```
 
 then feels free to execute command.
 
 ```
-gpl-nginx-setup-hello-world-static.sh --domain ijortengab.my.id
+gpl-wrapper.sh
 ```
 
-## Using Wrapper
+## About Shell Script
 
-If you wants to prompt every available options of the command and auto download every dependency, use the `gpl-wrapper.sh`.
+Each script can execute direct, use `gpl-dependency-manager.sh` to auto download every dependency.
 
-Download:
+Example the script `gpl-nginx-setup-hello-world-static.sh` will create virtual host of input `$domain`, then return the `Hello World` of contents inside `index.html`.
 
 ```
-gpl-dependency-manager.sh gpl-wrapper.sh
+gpl-dependency-manager.sh gpl-nginx-setup-hello-world-static.sh
+read -p 'Domain: ' domain
+gpl-nginx-setup-hello-world-static.sh --domain $domain
+```
+
+If you wants to prompt every available options of the command and auto download every dependency, use the `gpl-wrapper.sh` as wrapper of shell script.
+
+Example:
+
+```
 gpl-wrapper.sh gpl-nginx-setup-hello-world-static.sh
 ```
 
