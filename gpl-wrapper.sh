@@ -37,7 +37,7 @@ fi
 
 # Functions.
 [[ $(type -t GplWrapper_printVersion) == function ]] || GplWrapper_printVersion() {
-    echo '0.1.1'
+    echo '0.1.2'
 }
 [[ $(type -t GplWrapper_printHelp) == function ]] || GplWrapper_printHelp() {
     cat << EOF
@@ -91,6 +91,16 @@ EOF
 [[ $(type -t ____) == function ]] || ____() { echo >&2; [ -n "$delay" ] && sleep "$delay"; }
 
 # Functions.
+[[ $(type -t fileMustExists) == function ]] || fileMustExists() {
+    # global used:
+    # global modified:
+    # function used: __, success, error, x
+    if [ -f "$1" ];then
+        __; green File '`'$(basename "$1")'`' ditemukan.; _.
+    else
+        __; red File '`'$(basename "$1")'`' tidak ditemukan.; x
+    fi
+}
 [[ $(type -t GplWrapper_GplDownloader) == function ]] || GplWrapper_GplDownloader() {
     each="$1"
     inside_directory="$2"
@@ -286,15 +296,15 @@ fi
 
 # Prompt.
 if [ -z "$fast" ];then
-    seconds=2
-    start="$(($(date +%s) + $seconds))"
     yellow It is highly recommended that you use; _, ' ' ; magenta --fast; _, ' ' ; yellow option.; _.
-    while [ "$start" -ge `date +%s` ]; do
-        time="$(( $start - `date +%s` ))"
-        yellow .
+    countdown=5
+    while [ "$countdown" -ge 0 ]; do
+        printf "\r\033[K" >&2
+        printf %"$countdown"s | tr " " "." >&2
+        printf "\r"
+        countdown=$((countdown - 1))
         sleep .8
     done
-    _.
     ____
 fi
 
@@ -349,7 +359,6 @@ fi
 
 PATH="${BINARY_DIRECTORY}:${PATH}"
 GplWrapper_GplDownloader gpl-dependency-manager.sh
-____
 
 GplWrapper_GplDownloader $command true
 
@@ -363,20 +372,20 @@ fi
 
 chapter Execute:
 [ -n "$fast" ] && isfast='--fast ' || isfast=''
-code gpl-dependency-manager.sh ${isfast}${$command}
-code ${$command} ${isfast}"$@"
+code gpl-dependency-manager.sh ${isfast}${command}
+code ${command} ${isfast}"$@"
 ____
 
 if [ -z "$fast" ];then
-    seconds=2
-    start="$(($(date +%s) + $seconds))"
     yellow It is highly recommended that you use; _, ' ' ; magenta --fast; _, ' ' ; yellow option.; _.
-    while [ "$start" -ge `date +%s` ]; do
-        time="$(( $start - `date +%s` ))"
-        yellow .
+    countdown=5
+    while [ "$countdown" -ge 0 ]; do
+        printf "\r\033[K" >&2
+        printf %"$countdown"s | tr " " "." >&2
+        printf "\r"
+        countdown=$((countdown - 1))
         sleep .8
     done
-    _.
     ____
 fi
 
